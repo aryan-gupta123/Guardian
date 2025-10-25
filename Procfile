@@ -1,1 +1,1 @@
-web: gunicorn anomaly_detection.wsgi:application
+web: gunicorn wsgi:application
