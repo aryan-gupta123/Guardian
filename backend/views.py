@@ -1,108 +1,123 @@
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
+from django.shortcuts import render
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
-from .models import Merchant, Transaction, AgentAction
-from .serializers import MerchantSerializer, TransactionSerializer, AgentActionSerializer
+from .models import Transaction, Merchant
+from .serializers import TransactionSerializer, MerchantSerializer
 from .services.ml.anomaly_detector import AnomalyDetector
 from .services.ml.explainability import ExplainabilityService
 
+# Homepage view
+def homepage(request):
+    return render(request, 'homepage.html')
 
-class MerchantViewSet(viewsets.ModelViewSet):
-    queryset = Merchant.objects.all()
-    serializer_class = MerchantSerializer
+# API Views
+@api_view(['POST'])
+def ingest_transaction(request):
+    """Ingest a new transaction for analysis"""
+    try:
+        serializer = TransactionSerializer(data=request.data)
+        if serializer.is_valid():
+            transaction = serializer.save()
+            
+            # Score the transaction
+            detector = AnomalyDetector()
+            risk_score, is_anomaly = detector.score_transaction(transaction)
+            
+            # Update transaction with risk score
+            transaction.risk_score = risk_score
+            transaction.is_anomaly = is_anomaly
+            transaction.save()
+            
+            return Response({
+                'transaction_id': transaction.id,
+                'risk_score': risk_score,
+                'is_anomaly': is_anomaly,
+                'status': 'success'
+            })
+        return Response(serializer.errors, status=400)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
 
-    @action(detail=True, methods=['get'])
-    def transactions(self, request, pk=None):
-        merchant = self.get_object()
-        transactions = merchant.transactions.all()
-        serializer = TransactionSerializer(transactions, many=True)
-        return Response(serializer.data)
+@api_view(['GET'])
+def score_transaction(request, transaction_id):
+    """Get risk score for a specific transaction"""
+    try:
+        transaction = Transaction.objects.get(id=transaction_id)
+        return Response({
+            'transaction_id': transaction.id,
+            'risk_score': transaction.risk_score,
+            'is_anomaly': transaction.is_anomaly,
+            'amount': transaction.amount,
+            'merchant': transaction.merchant.name if transaction.merchant else None
+        })
+    except Transaction.DoesNotExist:
+        return Response({'error': 'Transaction not found'}, status=404)
 
-
-class TransactionViewSet(viewsets.ModelViewSet):
-    queryset = Transaction.objects.all()
-    serializer_class = TransactionSerializer
-
-    @action(detail=True, methods=['get'])
-    def explain(self, request, pk=None):
-        transaction = self.get_object()
+@api_view(['GET'])
+def explain_transaction(request, transaction_id):
+    """Get explanation for a transaction's risk score"""
+    try:
+        transaction = Transaction.objects.get(id=transaction_id)
         explainer = ExplainabilityService()
         explanation = explainer.explain_transaction(transaction)
         return Response(explanation)
+    except Transaction.DoesNotExist:
+        return Response({'error': 'Transaction not found'}, status=404)
 
-
-class IngestView(APIView):
-    def post(self, request):
-        # Handle transaction ingestion
-        data = request.data
+@api_view(['POST'])
+def agent_action(request):
+    """Handle agent actions (block, allow, investigate)"""
+    try:
+        transaction_id = request.data.get('transaction_id')
+        action = request.data.get('action')  # 'block', 'allow', 'investigate'
         
-        # Create or get merchant
-        merchant, created = Merchant.objects.get_or_create(
-            name=data.get('merchant_name'),
-            defaults={
-                'category': data.get('merchant_category', 'unknown'),
-                'location': data.get('merchant_location', 'unknown')
-            }
-        )
+        if not transaction_id or not action:
+            return Response({'error': 'Missing transaction_id or action'}, status=400)
         
-        # Create transaction
-        transaction = Transaction.objects.create(
-            merchant=merchant,
-            amount=data.get('amount'),
-            timestamp=data.get('timestamp'),
-            user_id=data.get('user_id'),
-            features=data.get('features', {})
-        )
+        transaction = Transaction.objects.get(id=transaction_id)
         
-        # Score the transaction
-        detector = AnomalyDetector()
-        risk_score, is_anomaly = detector.score_transaction(transaction)
+        # Update transaction status based on action
+        if action == 'block':
+            transaction.status = 'blocked'
+        elif action == 'allow':
+            transaction.status = 'allowed'
+        elif action == 'investigate':
+            transaction.status = 'under_investigation'
         
-        transaction.risk_score = risk_score
-        transaction.is_anomaly = is_anomaly
         transaction.save()
         
-        serializer = TransactionSerializer(transaction)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-class ScoreView(APIView):
-    def post(self, request):
-        # Score a transaction without saving
-        data = request.data
-        detector = AnomalyDetector()
-        
-        # Create temporary transaction object for scoring
-        temp_transaction = type('obj', (object,), {
-            'amount': data.get('amount'),
-            'features': data.get('features', {}),
-            'timestamp': data.get('timestamp')
-        })
-        
-        risk_score, is_anomaly = detector.score_transaction(temp_transaction)
-        
         return Response({
-            'risk_score': risk_score,
-            'is_anomaly': is_anomaly
+            'transaction_id': transaction.id,
+            'action': action,
+            'status': transaction.status,
+            'message': f'Transaction {action}ed successfully'
         })
+    except Transaction.DoesNotExist:
+        return Response({'error': 'Transaction not found'}, status=404)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
 
+@api_view(['GET'])
+def get_merchant(request, merchant_id):
+    """Get merchant information"""
+    try:
+        merchant = Merchant.objects.get(id=merchant_id)
+        serializer = MerchantSerializer(merchant)
+        return Response(serializer.data)
+    except Merchant.DoesNotExist:
+        return Response({'error': 'Merchant not found'}, status=404)
 
-class AgentActionView(APIView):
-    def post(self, request):
-        # Handle agent actions
-        data = request.data
-        transaction_id = data.get('transaction_id')
-        transaction = get_object_or_404(Transaction, id=transaction_id)
+@api_view(['GET'])
+def get_high_risk_transactions(request):
+    """Get all high-risk transactions"""
+    try:
+        high_risk_transactions = Transaction.objects.filter(
+            is_anomaly=True,
+            status__in=['pending', 'under_investigation']
+        ).order_by('-created_at')
         
-        action = AgentAction.objects.create(
-            transaction=transaction,
-            action_type=data.get('action_type'),
-            reason=data.get('reason'),
-            confidence=data.get('confidence', 0.0)
-        )
-        
-        serializer = AgentActionSerializer(action)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+        serializer = TransactionSerializer(high_risk_transactions, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)

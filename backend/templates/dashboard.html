@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CalHacks Guardian</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Fixed Top Navbar -->
+    <nav class="fixed top-0 left-0 right-0 bg-gray-800 bg-opacity-95 backdrop-blur-sm border-b border-gray-700 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Left: Guardian Logo -->
+                <div class="flex items-center">
+                    <i class="fas fa-shield-alt text-blue-400 text-2xl mr-2"></i>
+                    <span class="text-xl font-bold text-white">Guardian</span>
+                </div>
+
+                <!-- Center: Transaction Dashboard -->
+                <div class="hidden md:block">
+                    <h1 class="text-lg font-semibold text-white">Transaction Dashboard</h1>
+                </div>
+
+                <!-- Right: User + Logout -->
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-300">@{{ user.username }}</span>
+                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex pt-16">
+        <!-- Left Sidebar -->
+        <div class="w-20 bg-gray-800 min-h-screen flex flex-col items-center py-6 space-y-6">
+            <a href="#dashboard" class="sidebar-item active" data-section="dashboard">
+                <i class="fas fa-home text-2xl"></i>
+                <span class="text-xs mt-1">Dashboard</span>
+            </a>
+            
+            <a href="#risk" class="sidebar-item" data-section="risk">
+                <i class="fas fa-exclamation-triangle text-2xl"></i>
+                <span class="text-xs mt-1">Risk Feed</span>
+            </a>
+            
+            <a href="#agents" class="sidebar-item" data-section="agents">
+                <i class="fas fa-robot text-2xl"></i>
+                <span class="text-xs mt-1">Agent Actions</span>
+            </a>
+            
+            <a href="#settings" class="sidebar-item" data-section="settings">
+                <i class="fas fa-cog text-2xl"></i>
+                <span class="text-xs mt-1">Settings</span>
+            </a>
+        </div>
+
+        <!-- Main Section -->
+        <div class="flex-1 p-8">
+            <!-- Transaction Table -->
+            <div class="bg-gray-800 rounded-lg shadow-xl">
+                <div class="px-6 py-4 border-b border-gray-700">
+                    <h2 class="text-xl font-semibold text-white">Recent Transactions</h2>
+                    <p class="text-gray-400 text-sm">Monitor and manage transaction risks</p>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-700">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Merchant</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Risk</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-700">
+                            {% for transaction in transactions %}
+                            <tr class="hover:bg-gray-700 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center mr-3">
+                                            <i class="fas fa-store text-gray-300"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-white">{{ transaction.merchant }}</div>
+                                            <div class="text-sm text-gray-400">{{ transaction.timestamp }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-white">${{ transaction.amount }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {% if transaction.risk_level == 'Safe' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            🟢 Safe
+                                        </span>
+                                    {% elif transaction.risk_level == 'Medium' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            🟡 Medium
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            🔴 Risky
+                                        </span>
+                                    {% endif %}
+                                    <div class="text-xs text-gray-400 mt-1">Score: {{ transaction.risk_score }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        {% if transaction.risk_level == 'Risky' %}
+                                            <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">
+                                                <i class="fas fa-ban mr-1"></i>Block
+                                            </button>
+                                        {% endif %}
+                                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs">
+                                            <i class="fas fa-eye mr-1"></i>View
+                                        </button>
+                                        <button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-xs">
+                                            <i class="fas fa-cog mr-1"></i>More
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Risk Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-white">12</div>
+                            <div class="text-gray-400 text-sm">Safe Transactions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-yellow-600 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-exclamation text-white"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-white">3</div>
+                            <div class="text-gray-400 text-sm">Medium Risk</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-times text-white"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-white">1</div>
+                            <div class="text-gray-400 text-sm">High Risk</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar navigation
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all items
+                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                
+                // Add active class to clicked item
+                this.classList.add('active');
+                
+                // Handle section switching (placeholder for now)
+                const section = this.dataset.section;
+                console.log('Switching to section:', section);
+            });
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/logout/';
+            }
+        }
+
+        // Auto-refresh transactions every 30 seconds
+        setInterval(() => {
+            // Placeholder for auto-refresh functionality
+            console.log('Refreshing transactions...');
+        }, 30000);
+    </script>
+
+    <style>
+        .sidebar-item {
+            @apply flex flex-col items-center p-3 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors cursor-pointer;
+        }
+        
+        .sidebar-item.active {
+            @apply text-blue-400 bg-gray-700;
+        }
+        
+        .sidebar-item i {
+            @apply mb-1;
+        }
+    </style>
+</body>
+</html>
