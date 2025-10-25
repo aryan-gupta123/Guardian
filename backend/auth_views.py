@@ -51,22 +51,22 @@ def logout_view(request):
 def dashboard_view(request):
     # Dummy data for the transaction table
     transactions = [
-        {'id': 1, 'merchant': 'GlobalTech Solutions', 'amount': 120.50, 'risk': '🟢 Safe', 'actions': ['View', 'More']},
-        {'id': 2, 'merchant': 'QuickMart Groceries', 'amount': 55.20, 'risk': '🟢 Safe', 'actions': ['View', 'More']},
-        {'id': 3, 'merchant': 'ElectroGadget Store', 'amount': 1500.00, 'risk': '🔴 Risky', 'actions': ['Block', 'View', 'More']},
-        {'id': 4, 'merchant': 'Coffee Bean Cafe', 'amount': 12.75, 'risk': '🟢 Safe', 'actions': ['View', 'More']},
-        {'id': 5, 'merchant': 'Travel Adventures Inc.', 'amount': 780.00, 'risk': '🟡 Medium', 'actions': ['Review', 'View', 'More']},
-        {'id': 6, 'merchant': 'Online Gaming Hub', 'amount': 250.00, 'risk': '🟢 Safe', 'actions': ['View', 'More']},
-        {'id': 7, 'merchant': 'Luxury Watches Co.', 'amount': 5200.00, 'risk': '🔴 Risky', 'actions': ['Block', 'View', 'More']},
-        {'id': 8, 'merchant': 'Local Bookstore', 'amount': 30.00, 'risk': '🟢 Safe', 'actions': ['View', 'More']},
-        {'id': 9, 'merchant': 'International Payments', 'amount': 950.00, 'risk': '🟡 Medium', 'actions': ['Review', 'View', 'More']},
-        {'id': 10, 'merchant': 'Gadget Repair Shop', 'amount': 85.00, 'risk': '🟢 Safe', 'actions': ['View', 'More']},
+        {'id': 1, 'merchant': 'Tesla, Inc.', 'amount': 120.50, 'risk_level': 'Safe', 'risk_score': 0.2, 'ticker': 'TSLA', 'timestamp': '2024-01-15 10:30:00'},
+        {'id': 2, 'merchant': 'Apple Store', 'amount': 55.20, 'risk_level': 'Safe', 'risk_score': 0.1, 'ticker': 'AAPL', 'timestamp': '2024-01-15 11:15:00'},
+        {'id': 3, 'merchant': 'Crypto Exchange', 'amount': 1500.00, 'risk_level': 'Risky', 'risk_score': 0.9, 'ticker': 'CRYPTO', 'timestamp': '2024-01-15 12:00:00'},
+        {'id': 4, 'merchant': 'Starbucks', 'amount': 12.75, 'risk_level': 'Safe', 'risk_score': 0.1, 'ticker': 'SBUX', 'timestamp': '2024-01-15 13:45:00'},
+        {'id': 5, 'merchant': 'Amazon', 'amount': 780.00, 'risk_level': 'Medium', 'risk_score': 0.6, 'ticker': 'AMZN', 'timestamp': '2024-01-15 14:30:00'},
+        {'id': 6, 'merchant': 'Microsoft', 'amount': 250.00, 'risk_level': 'Safe', 'risk_score': 0.2, 'ticker': 'MSFT', 'timestamp': '2024-01-15 15:15:00'},
+        {'id': 7, 'merchant': 'Unknown Merchant', 'amount': 5200.00, 'risk_level': 'Risky', 'risk_score': 0.95, 'ticker': 'UNKNOWN', 'timestamp': '2024-01-15 16:00:00'},
+        {'id': 8, 'merchant': 'Google', 'amount': 30.00, 'risk_level': 'Safe', 'risk_score': 0.1, 'ticker': 'GOOGL', 'timestamp': '2024-01-15 16:45:00'},
+        {'id': 9, 'merchant': 'Meta', 'amount': 950.00, 'risk_level': 'Medium', 'risk_score': 0.7, 'ticker': 'META', 'timestamp': '2024-01-15 17:30:00'},
+        {'id': 10, 'merchant': 'Netflix', 'amount': 85.00, 'risk_level': 'Safe', 'risk_score': 0.3, 'ticker': 'NFLX', 'timestamp': '2024-01-15 18:15:00'},
     ]
 
     risk_counts = {
-        'safe': sum(1 for t in transactions if 'Safe' in t['risk']),
-        'medium': sum(1 for t in transactions if 'Medium' in t['risk']),
-        'risky': sum(1 for t in transactions if 'Risky' in t['risk']),
+        'safe': sum(1 for t in transactions if t['risk_level'] == 'Safe'),
+        'medium': sum(1 for t in transactions if t['risk_level'] == 'Medium'),
+        'risky': sum(1 for t in transactions if t['risk_level'] == 'Risky'),
     }
 
     context = {

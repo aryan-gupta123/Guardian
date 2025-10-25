@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - CalHacks Guardian</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -113,6 +114,15 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
+                                        <button onclick="openRiskModal({
+                                            merchant: '{{ transaction.merchant }}',
+                                            amount: {{ transaction.amount }},
+                                            risk: '{{ transaction.risk_level }}',
+                                            score: {{ transaction.risk_score }},
+                                            ticker: '{{ transaction.ticker|default:"N/A" }}'
+                                        })" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-xs transition-colors">
+                                            <i class="fas fa-search mr-1"></i>Analyze
+                                        </button>
                                         {% if transaction.risk_level == 'Risky' %}
                                             <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">
                                                 <i class="fas fa-ban mr-1"></i>Block
@@ -204,6 +214,82 @@
             // Placeholder for auto-refresh functionality
             console.log('Refreshing transactions...');
         }, 30000);
+
+        // Risk Modal Functions
+        function openRiskModal(companyData) {
+            const modal = document.getElementById('riskModal');
+            const riskScore = Math.floor(Math.random() * 100);
+            
+            // Update company info
+            document.getElementById('companyName').textContent = companyData.merchant;
+            document.getElementById('companyTicker').textContent = companyData.ticker || 'N/A • Technology';
+            document.getElementById('riskScore').textContent = riskScore;
+            document.getElementById('riskPercentage').textContent = riskScore + '%';
+            
+            // Update risk level and color
+            let riskLevel, riskColor;
+            if (riskScore >= 80) {
+                riskLevel = 'High Risk';
+                riskColor = '#ef4444';
+            } else if (riskScore >= 60) {
+                riskLevel = 'Moderate Risk';
+                riskColor = '#f59e0b';
+            } else {
+                riskLevel = 'Low Risk';
+                riskColor = '#10b981';
+            }
+            
+            document.getElementById('riskLevel').textContent = riskLevel;
+            document.getElementById('riskLevel').className = `text-lg font-semibold`;
+            if (riskScore >= 80) {
+                document.getElementById('riskLevel').classList.add('text-red-400');
+            } else if (riskScore >= 60) {
+                document.getElementById('riskLevel').classList.add('text-yellow-400');
+            } else {
+                document.getElementById('riskLevel').classList.add('text-green-400');
+            }
+            
+            // Update circle progress
+            const circle = document.getElementById('riskCircle');
+            const circumference = 2 * Math.PI * 40;
+            const offset = circumference - (riskScore / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+            circle.style.stroke = riskColor;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeRiskModal() {
+            document.getElementById('riskModal').classList.add('hidden');
+        }
+
+        function toggleRiskDetail(factor) {
+            const detail = document.getElementById(factor + '-detail');
+            const chevron = detail.previousElementSibling.querySelector('.fa-chevron-down');
+            
+            if (detail.classList.contains('hidden')) {
+                detail.classList.remove('hidden');
+                chevron.classList.remove('fa-chevron-down');
+                chevron.classList.add('fa-chevron-up');
+            } else {
+                detail.classList.add('hidden');
+                chevron.classList.remove('fa-chevron-up');
+                chevron.classList.add('fa-chevron-down');
+            }
+        }
+
+        function runAIAudit() {
+            alert('🧠 Running AI Audit with Baseten/Claude...\n\nThis would trigger an automated LLM evaluation of the company\'s risk factors with detailed commentary.');
+        }
+
+        function simulateChange() {
+            alert('🪄 Simulate Change with Fetch.ai...\n\nThis would allow you to toggle scenarios like "CEO resigns" to see predicted impact on risk scores.');
+        }
+
+        function exportSummary() {
+            alert('📊 Exporting Summary via Postman API...\n\nThis would generate a comprehensive JSON report of all risk factors and analysis.');
+        }
+
     </script>
 
     <style>
@@ -219,5 +305,8 @@
             @apply mb-1;
         }
     </style>
+
+    <!-- Include Risk Modal -->
+    {% include 'risk_modal.html' %}
 </body>
 </html>
