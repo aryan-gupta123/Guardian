@@ -4,11 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO: brief description -->
+    <meta name="description" content="Real-time anomaly detection dashboard powered by AI." />
+
     <title>Anomaly Detection Dashboard</title>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Temporary loading UI before React mounts -->
+    <div id="root">
+      <noscript>You need JavaScript enabled to run this app.</noscript>
+      <p style="font-family: sans-serif; color: #555;">Loading Dashboard...</p>
+    </div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-
