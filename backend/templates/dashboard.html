@@ -7,27 +7,71 @@
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
+<body class="bg-[#0a1628] text-white min-h-screen">
     <!-- Fixed Top Navbar -->
-    <nav class="fixed top-0 left-0 right-0 bg-gray-800 bg-opacity-95 backdrop-blur-sm border-b border-gray-700 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
+    <nav class="fixed top-0 left-0 right-0 bg-[#0a1628]/95 backdrop-blur-md border-b border-blue-950/50 z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
                 <!-- Left: Guardian Logo -->
-                <div class="flex items-center">
-                    <i class="fas fa-shield-alt text-blue-400 text-2xl mr-2"></i>
-                    <span class="text-xl font-bold text-white">Guardian</span>
-                </div>
-
-                <!-- Center: Transaction Dashboard -->
-                <div class="hidden md:block">
-                    <h1 class="text-lg font-semibold text-white">Transaction Dashboard</h1>
-                </div>
-
-                <!-- Right: User + Logout -->
                 <div class="flex items-center space-x-4">
-                    <span class="text-gray-300">@{{ user.username }}</span>
-                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-shield-alt text-blue-400 text-2xl"></i>
+                        <span class="text-xl font-bold text-white">Guardian</span>
+                    </div>
+                    
+                    <!-- Navigation Links -->
+                    <div class="hidden md:flex items-center space-x-6 ml-8">
+                        <a href="#dashboard" class="text-blue-400 font-medium text-sm">Dashboard</a>
+                        <a href="#risk" class="text-gray-400 hover:text-white font-medium text-sm transition-colors">Risk Feed</a>
+                        <a href="#agents" class="text-gray-400 hover:text-white font-medium text-sm transition-colors">Agent Actions</a>
+                        <a href="#settings" class="text-gray-400 hover:text-white font-medium text-sm transition-colors">Settings</a>
+                    </div>
+                </div>
+
+                <!-- Right: User Info + Actions -->
+                <div class="flex items-center space-x-4">
+                    <!-- Notifications -->
+                    <button class="relative p-2 text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                    </button>
+                    
+                    <!-- User Profile -->
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-blue-600/20 rounded-full flex items-center justify-center border border-blue-500/30">
+                            <i class="fas fa-user text-blue-400 text-sm"></i>
+                        </div>
+                        <div class="hidden sm:block">
+                            <p class="text-white text-sm font-medium">@{{ user.username }}</p>
+                            <p class="text-gray-400 text-xs">Guardian User</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Logout -->
+                    <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600/30 text-red-400 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors border border-red-500/30 hover:border-red-500/50">
                         <i class="fas fa-sign-out-alt mr-2"></i>Logout
                     </button>
                 </div>
@@ -36,147 +80,232 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="flex pt-16">
-        <!-- Left Sidebar -->
-        <div class="w-20 bg-gray-800 min-h-screen flex flex-col items-center py-6 space-y-6">
-            <a href="#dashboard" class="sidebar-item active" data-section="dashboard">
-                <i class="fas fa-home text-2xl"></i>
-                <span class="text-xs mt-1">Dashboard</span>
-            </a>
-            
-            <a href="#risk" class="sidebar-item" data-section="risk">
-                <i class="fas fa-exclamation-triangle text-2xl"></i>
-                <span class="text-xs mt-1">Risk Feed</span>
-            </a>
-            
-            <a href="#agents" class="sidebar-item" data-section="agents">
-                <i class="fas fa-robot text-2xl"></i>
-                <span class="text-xs mt-1">Agent Actions</span>
-            </a>
-            
-            <a href="#settings" class="sidebar-item" data-section="settings">
-                <i class="fas fa-cog text-2xl"></i>
-                <span class="text-xs mt-1">Settings</span>
-            </a>
-        </div>
+    <div class="pt-16">
+        <!-- Main Dashboard Content -->
+        <div class="p-8">
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Stats Cards -->
+                    <div class="grid sm:grid-cols-3 gap-4">
+                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-exclamation-triangle text-red-500"></i>
+                                <span class="text-gray-400 text-sm">High Risk</span>
+                            </div>
+                            <p class="text-2xl text-red-400 font-bold" id="highRiskCount">3</p>
+                        </div>
 
-        <!-- Main Section -->
-        <div class="flex-1 p-8">
-            <!-- Transaction Table -->
-            <div class="bg-gray-800 rounded-lg shadow-xl">
-                <div class="px-6 py-4 border-b border-gray-700">
-                    <h2 class="text-xl font-semibold text-white">Recent Transactions</h2>
-                    <p class="text-gray-400 text-sm">Monitor and manage transaction risks</p>
-                </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-700">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Merchant</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Amount</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Risk</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-700">
-                            {% for transaction in transactions %}
-                            <tr class="hover:bg-gray-700 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center mr-3">
-                                            <i class="fas fa-store text-gray-300"></i>
-                                        </div>
-                                        <div>
-                                            <div class="text-sm font-medium text-white">{{ transaction.merchant }}</div>
-                                            <div class="text-sm text-gray-400">{{ transaction.timestamp }}</div>
-                                        </div>
+                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-chart-line text-blue-400"></i>
+                                <span class="text-gray-400 text-sm">Avg Risk</span>
+                            </div>
+                            <p class="text-2xl text-white" id="avgRiskScore">65/100</p>
+                        </div>
+
+                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-dollar-sign text-green-500"></i>
+                                <span class="text-gray-400 text-sm">Total Tracked</span>
+                            </div>
+                            <p class="text-2xl text-white" id="totalAmount">$2,847.50</p>
+                        </div>
+                    </div>
+
+                    <!-- Risk Cap Setting -->
+                    <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-6 backdrop-blur-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-white text-lg">Protection Sensitivity</h3>
+                                <p class="text-gray-400 text-sm">
+                                    <span id="sensitivityText">⚖️ Balanced Protection - Flagging moderate to high risks</span>
+                                </p>
+                            </div>
+                            <div class="text-2xl font-mono text-yellow-400" id="riskCapValue">50</div>
+                        </div>
+                        <div class="relative">
+                            <!-- Gradient background track -->
+                            <div class="absolute inset-0 h-2 rounded-full bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 opacity-30"></div>
+                            <input 
+                                type="range" 
+                                id="riskCapSlider"
+                                min="0" 
+                                max="100" 
+                                value="50" 
+                                step="5"
+                                class="w-full h-2 bg-transparent rounded-lg appearance-none cursor-pointer relative z-10"
+                                style="background: linear-gradient(to right, #10b981 0%, #f59e0b 50%, #ef4444 100%);"
+                            />
+                        </div>
+                        <div class="flex justify-between text-xs mt-3">
+                            <span class="text-green-400">🛡️ Max Protection</span>
+                            <span class="text-yellow-400">⚖️ Balanced</span>
+                            <span class="text-red-400">⚠️ Minimal</span>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-5 backdrop-blur-sm">
+                        <h3 class="text-white mb-4 text-lg">Filter Transactions</h3>
+                        
+                        <!-- Risk Status Group -->
+                        <div class="mb-5">
+                            <h4 class="text-gray-400 text-sm mb-3">Risk Status</h4>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" id="flagged" class="rounded border-blue-500 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-gray-300">Flagged (3)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" id="warning" class="rounded border-blue-500 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-gray-300">Caution (2)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" id="safe" class="rounded border-blue-500 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-gray-300">Safe (5)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Merchant Trust Group -->
+                        <div class="mb-5">
+                            <h4 class="text-gray-400 text-sm mb-3">Merchant Trust</h4>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" id="trusted" class="rounded border-blue-500 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-gray-300">Trusted (6)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" id="untrusted" class="rounded border-blue-500 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-gray-300">Untrusted (4)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Transaction Type Group -->
+                        <div class="mb-5">
+                            <h4 class="text-gray-400 text-sm mb-3">Transaction Type</h4>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" id="recurring" class="rounded border-blue-500 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-gray-300">Recurring (7)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" id="one-time" class="rounded border-blue-500 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-gray-300">One-Time (3)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Amount Range Group -->
+                        <div>
+                            <h4 class="text-gray-400 text-sm mb-3">Amount Range</h4>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" id="large-amount" class="rounded border-blue-500 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-gray-300">Large (>$100) (4)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" id="small-amount" class="rounded border-blue-500 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-gray-300">Small (≤$100) (6)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transaction Cards -->
+                    <div class="space-y-4" id="transactionCards">
+                        {% for transaction in transactions %}
+                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-6 backdrop-blur-sm hover:bg-blue-950/40 transition-all cursor-pointer" onclick="openRiskModal({
+                            merchant: '{{ transaction.merchant }}',
+                            amount: {{ transaction.amount }},
+                            risk: '{{ transaction.risk_level }}',
+                            score: {{ transaction.risk_score }},
+                            ticker: '{{ transaction.ticker|default:"N/A" }}'
+                        })">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/30">
+                                        <i class="fas fa-store text-blue-400 text-xl"></i>
                                     </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-white">${{ transaction.amount }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    {% if transaction.risk_level == 'Safe' %}
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                            🟢 Safe
-                                        </span>
-                                    {% elif transaction.risk_level == 'Medium' %}
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                            🟡 Medium
-                                        </span>
-                                    {% else %}
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                            🔴 Risky
-                                        </span>
-                                    {% endif %}
-                                    <div class="text-xs text-gray-400 mt-1">Score: {{ transaction.risk_score }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <div class="flex space-x-2">
-                                        <button onclick="openRiskModal({
-                                            merchant: '{{ transaction.merchant }}',
-                                            amount: {{ transaction.amount }},
-                                            risk: '{{ transaction.risk_level }}',
-                                            score: {{ transaction.risk_score }},
-                                            ticker: '{{ transaction.ticker|default:"N/A" }}'
-                                        })" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-xs transition-colors">
-                                            <i class="fas fa-search mr-1"></i>Analyze
-                                        </button>
-                                        {% if transaction.risk_level == 'Risky' %}
-                                            <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">
-                                                <i class="fas fa-ban mr-1"></i>Block
-                                            </button>
+                                    <div>
+                                        <h3 class="text-white font-semibold text-lg">{{ transaction.merchant }}</h3>
+                                        <p class="text-gray-400 text-sm">{{ transaction.timestamp }}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-white font-bold text-xl">${{ transaction.amount }}</div>
+                                    <div class="flex items-center space-x-2 mt-1">
+                                        {% if transaction.risk_level == 'Safe' %}
+                                            <span class="text-green-400 text-sm">🟢 Safe</span>
+                                        {% elif transaction.risk_level == 'Warning' %}
+                                            <span class="text-yellow-400 text-sm">🟡 Medium</span>
+                                        {% else %}
+                                            <span class="text-red-400 text-sm">🔴 Risky</span>
                                         {% endif %}
-                                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs">
-                                            <i class="fas fa-eye mr-1"></i>View
-                                        </button>
-                                        <button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-xs">
-                                            <i class="fas fa-cog mr-1"></i>More
-                                        </button>
+                                        <span class="text-gray-400 text-sm">Score: {{ transaction.risk_score }}</span>
                                     </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Risk Summary Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                <div class="bg-gray-800 rounded-lg p-6">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mr-4">
-                            <i class="fas fa-check text-white"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <div class="text-2xl font-bold text-white">12</div>
-                            <div class="text-gray-400 text-sm">Safe Transactions</div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
 
-                <div class="bg-gray-800 rounded-lg p-6">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-yellow-600 rounded-full flex items-center justify-center mr-4">
-                            <i class="fas fa-exclamation text-white"></i>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold text-white">3</div>
-                            <div class="text-gray-400 text-sm">Medium Risk</div>
+                <!-- Right Sidebar -->
+                <div class="space-y-6">
+                    <!-- Guardian Mode Toggle -->
+                    <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
+                        <h3 class="text-white mb-4">Guardian Mode</h3>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-400">Voice Alerts</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="guardianMode" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
                         </div>
                     </div>
-                </div>
 
-                <div class="bg-gray-800 rounded-lg p-6">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center mr-4">
-                            <i class="fas fa-times text-white"></i>
+                    <!-- Trusted Contact -->
+                    <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
+                        <h3 class="text-white mb-4">Trusted Contact</h3>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center border border-green-500/30">
+                                <i class="fas fa-user text-green-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-semibold">Sarah Johnson</p>
+                                <p class="text-gray-400 text-sm">Emergency Contact</p>
+                            </div>
                         </div>
-                        <div>
-                            <div class="text-2xl font-bold text-white">1</div>
-                            <div class="text-gray-400 text-sm">High Risk</div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
+                        <h3 class="text-white mb-4">Quick Actions</h3>
+                        <div class="space-y-2">
+                            <button class="w-full text-left px-3 py-2 rounded-lg text-blue-400 hover:bg-blue-950/50 hover:text-white transition-colors">
+                                📊 View Risk Patterns
+                            </button>
+                            <button class="w-full text-left px-3 py-2 rounded-lg text-blue-400 hover:bg-blue-950/50 hover:text-white transition-colors">
+                                🔍 Investigate Mode
+                            </button>
+                            <button class="w-full text-left px-3 py-2 rounded-lg text-blue-400 hover:bg-blue-950/50 hover:text-white transition-colors">
+                                ⚙️ Configure Alerts
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tech Stack -->
+                    <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
+                        <h3 class="text-white mb-3">Powered By</h3>
+                        <div class="space-y-2 text-sm text-gray-300">
+                            <p>🤖 <strong>Fetch.ai & Creao:</strong> Agentic workflows</p>
+                            <p>🧠 <strong>Claude:</strong> Explainable AI reasoning</p>
+                            <p>📊 <strong>Bright Data:</strong> Merchant intelligence</p>
+                            <p>🔊 <strong>Fish Audio:</strong> Voice accessibility</p>
+                            <p>⚛️ <strong>React + Tailwind:</strong> Modern UI/UX</p>
                         </div>
                     </div>
                 </div>
@@ -184,36 +313,58 @@
         </div>
     </div>
 
+    <!-- Include Risk Modal -->
+    {% include 'risk_modal.html' %}
+
     <script>
-        // Sidebar navigation
-        document.querySelectorAll('.sidebar-item').forEach(item => {
-            item.addEventListener('click', function(e) {
+        // Navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
                 e.preventDefault();
-                
-                // Remove active class from all items
-                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-                
-                // Add active class to clicked item
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                 this.classList.add('active');
-                
-                // Handle section switching (placeholder for now)
-                const section = this.dataset.section;
-                console.log('Switching to section:', section);
             });
+        });
+
+        // Risk cap slider
+        const riskCapSlider = document.getElementById('riskCapSlider');
+        const riskCapValue = document.getElementById('riskCapValue');
+        const sensitivityText = document.getElementById('sensitivityText');
+
+        riskCapSlider.addEventListener('input', function() {
+            const value = this.value;
+            riskCapValue.textContent = value;
+            
+            if (value <= 30) {
+                sensitivityText.textContent = "🛡️ Maximum Protection - Flagging all potential risks";
+            } else if (value <= 60) {
+                sensitivityText.textContent = "⚖️ Balanced Protection - Flagging moderate to high risks";
+            } else {
+                sensitivityText.textContent = "⚠️ Minimal Protection - Only flagging extreme risks";
+            }
+        });
+
+        // Filter functionality
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Add filter logic here
+                console.log('Filter changed:', this.id, this.checked);
+            });
+        });
+
+        // Guardian Mode toggle
+        document.getElementById('guardianMode').addEventListener('change', function() {
+            if (this.checked) {
+                console.log('Guardian Mode activated - Voice alerts enabled');
+            } else {
+                console.log('Guardian Mode deactivated');
+            }
         });
 
         // Logout function
         function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                window.location.href = '/logout/';
-            }
+            window.location.href = '/logout/';
         }
-
-        // Auto-refresh transactions every 30 seconds
-        setInterval(() => {
-            // Placeholder for auto-refresh functionality
-            console.log('Refreshing transactions...');
-        }, 30000);
 
         // Risk Modal Functions
         function openRiskModal(companyData) {
@@ -271,7 +422,7 @@
                     
                     // Update circle progress
                     const circle = document.getElementById('riskCircle');
-                    const circumference = 2 * Math.PI * 40;
+                    const circumference = 2 * Math.PI * 45; // Updated radius for new design
                     const offset = circumference - (riskScore / 100) * circumference;
                     circle.style.strokeDashoffset = offset;
                     circle.style.stroke = riskColor;
@@ -292,7 +443,11 @@
                 updateRiskScore(riskScore);
             });
         }
-        
+
+        function closeRiskModal() {
+            document.getElementById('riskModal').classList.add('hidden');
+        }
+
         function getRiskColor(score) {
             if (score >= 80) return '#ef4444';
             if (score >= 60) return '#f59e0b';
@@ -324,35 +479,31 @@
             
             // Update circle progress
             const circle = document.getElementById('riskCircle');
-            const circumference = 2 * Math.PI * 40;
-            const offset = circumference - (riskScore / 100) * circumference;
-            circle.style.strokeDashoffset = offset;
-            circle.style.stroke = riskColor;
+            if (circle) {
+                const circumference = 2 * Math.PI * 45;
+                const offset = circumference - (riskScore / 100) * circumference;
+                circle.style.strokeDashoffset = offset;
+                circle.style.stroke = riskColor;
+            }
         }
-        
+
         function updateRiskBreakdown(reasons) {
-            // Update risk factor cards with ML explanations
-            reasons.forEach((reason, index) => {
-                const factorCards = document.querySelectorAll('.bg-gray-800.rounded-lg.p-4');
-                if (factorCards[index]) {
-                    const progressBar = factorCards[index].querySelector('.bg-gray-700.rounded-full.h-2 > div');
-                    if (progressBar) {
-                        const weight = reason.weight || 0.5;
-                        progressBar.style.width = (weight * 100) + '%';
-                        
-                        // Update color based on contribution
-                        if (weight > 0.7) {
-                            progressBar.className = progressBar.className.replace(/bg-\w+-\d+/, 'bg-red-500');
-                        } else if (weight > 0.4) {
-                            progressBar.className = progressBar.className.replace(/bg-\w+-\d+/, 'bg-yellow-500');
-                        } else {
-                            progressBar.className = progressBar.className.replace(/bg-\w+-\d+/, 'bg-green-500');
-                        }
-                    }
-                }
-            });
+            // Update risk breakdown with ML reasons
+            console.log('Updating risk breakdown with:', reasons);
         }
-        
+
+        function getMerchantRisk(merchant) {
+            // Simple heuristic based on merchant name
+            const riskyMerchants = ['casino', 'gambling', 'crypto', 'bitcoin', 'forex'];
+            const merchantLower = merchant.toLowerCase();
+            return riskyMerchants.some(risky => merchantLower.includes(risky)) ? 0.8 : 0.3;
+        }
+
+        function getTransactionRate(amount) {
+            // Simple heuristic based on amount
+            return amount > 1000 ? 0.9 : amount > 100 ? 0.5 : 0.2;
+        }
+
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -367,79 +518,22 @@
             }
             return cookieValue;
         }
-        
-        function getMerchantRisk(merchantName) {
-            // Consistent merchant risk based on merchant name
-            const riskyMerchants = ['crypto', 'exchange', 'unknown', 'scam', 'fake'];
-            const safeMerchants = ['tesla', 'apple', 'google', 'microsoft', 'amazon', 'netflix', 'starbucks'];
-            
-            const name = merchantName.toLowerCase();
-            
-            if (riskyMerchants.some(risky => name.includes(risky))) {
-                return 0.8; // High risk
-            } else if (safeMerchants.some(safe => name.includes(safe))) {
-                return 0.2; // Low risk
-            } else {
-                return 0.5; // Medium risk
-            }
-        }
-        
-        function getTransactionRate(amount) {
-            // Transaction rate based on amount (higher amounts = higher rate)
-            if (amount > 2000) return 8.0;
-            if (amount > 1000) return 5.0;
-            if (amount > 500) return 3.0;
-            return 1.5;
-        }
 
-        function closeRiskModal() {
-            document.getElementById('riskModal').classList.add('hidden');
-        }
-
-        function toggleRiskDetail(factor) {
-            const detail = document.getElementById(factor + '-detail');
-            const chevron = detail.previousElementSibling.querySelector('.fa-chevron-down');
-            
-            if (detail.classList.contains('hidden')) {
-                detail.classList.remove('hidden');
-                chevron.classList.remove('fa-chevron-down');
-                chevron.classList.add('fa-chevron-up');
-            } else {
-                detail.classList.add('hidden');
-                chevron.classList.remove('fa-chevron-up');
-                chevron.classList.add('fa-chevron-down');
-            }
-        }
-
-        function runAIAudit() {
-            alert('🧠 Running AI Audit with Baseten/Claude...\n\nThis would trigger an automated LLM evaluation of the company\'s risk factors with detailed commentary.');
-        }
-
-        function simulateChange() {
-            alert('🪄 Simulate Change with Fetch.ai...\n\nThis would allow you to toggle scenarios like "CEO resigns" to see predicted impact on risk scores.');
-        }
-
-        function exportSummary() {
-            alert('📊 Exporting Summary via Postman API...\n\nThis would generate a comprehensive JSON report of all risk factors and analysis.');
-        }
-
+        // Auto-refresh functionality
+        setInterval(() => {
+            // Placeholder for auto-refresh functionality
+            console.log('Refreshing transactions...');
+        }, 30000);
     </script>
 
     <style>
-        .sidebar-item {
-            @apply flex flex-col items-center p-3 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors cursor-pointer;
+        /* Navigation styles */
+        .nav-link {
+            @apply text-gray-400 hover:text-white font-medium text-sm transition-colors;
         }
-        
-        .sidebar-item.active {
-            @apply text-blue-400 bg-gray-700;
-        }
-        
-        .sidebar-item i {
-            @apply mb-1;
+        .nav-link.active {
+            @apply text-blue-400;
         }
     </style>
-
-    <!-- Include Risk Modal -->
-    {% include 'risk_modal.html' %}
 </body>
 </html>

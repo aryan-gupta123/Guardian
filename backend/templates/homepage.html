@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +39,28 @@
     <div id="root"></div>
     
     <!-- Load React App -->
-    <script type="module" src="/static/assets/index-bce96d34.js"></script>
-    <link rel="stylesheet" href="/static/assets/index-29d2d605.css">
+    <script type="module" src="{% static 'assets/index-bce96d34.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'assets/index-29d2d605.css' %}">
+    
+    <!-- Fallback if static files don't exist -->
+    <script>
+        // Check if React app loaded, if not show fallback
+        setTimeout(() => {
+            if (!document.getElementById('root').hasChildNodes()) {
+                document.getElementById('root').innerHTML = `
+                    <div class="min-h-screen bg-gray-900 flex items-center justify-center">
+                        <div class="text-center">
+                            <h1 class="text-4xl font-bold text-white mb-4">Guardian</h1>
+                            <p class="text-gray-400 mb-8">AI-Powered Transaction Security</p>
+                            <div class="space-y-4">
+                                <a href="/login/" class="block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg">Login</a>
+                                <a href="/signup/" class="block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg">Sign Up</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }, 2000);
+    </script>
 </body>
 </html>
