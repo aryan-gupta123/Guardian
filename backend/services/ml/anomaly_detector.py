@@ -1,13 +1,25 @@
-import numpy as np
-from sklearn.ensemble import IsolationForest
-from sklearn.preprocessing import StandardScaler
-import joblib
 import os
 from django.conf import settings
+
+try:
+    import numpy as np
+    from sklearn.ensemble import IsolationForest
+    from sklearn.preprocessing import StandardScaler
+    import joblib
+    ML_AVAILABLE = True
+except ImportError:
+    ML_AVAILABLE = False
+    print("Warning: ML dependencies not available. Anomaly detection will be disabled.")
 
 
 class AnomalyDetector:
     def __init__(self):
+        if not ML_AVAILABLE:
+            self.model = None
+            self.scaler = None
+            self.is_trained = False
+            return
+            
         self.model = IsolationForest(
             contamination=0.1,  # Expected proportion of anomalies
             random_state=42,
@@ -88,6 +100,10 @@ class AnomalyDetector:
     
     def score_transaction(self, transaction):
         """Score a single transaction for anomaly detection"""
+        if not ML_AVAILABLE:
+            # Return default scores if ML not available
+            return 0.5, False
+            
         if not self.is_trained:
             # Return default scores if model not trained
             return 0.5, False
