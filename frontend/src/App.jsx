@@ -5,15 +5,17 @@ import RiskTable from './components/RiskTable'
 import ExplainPanel from './components/ExplainPanel'
 import AgentActions from './components/AgentActions'
 import Navbar from './components/Navbar'
+import { LandingPage } from './components/LandingPage'
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-dark-900">
+      <div className="min-h-screen bg-gray-900">
         <Navbar />
-        <main className="container mx-auto px-4 py-8">
+        <main>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/risk-table" element={<RiskTable />} />
             <Route path="/explain" element={<ExplainPanel />} />
             <Route path="/agents" element={<AgentActions />} />

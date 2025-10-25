@@ -31,6 +31,9 @@ export default {
                     800: '#1e293b',
                     900: '#0f172a',
                 }
+            },
+            backgroundImage: {
+                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
             }
         },
     },
