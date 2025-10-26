@@ -1,12 +1,15 @@
 """
 BrightData - PURE LIVE SCRAPING ONLY
 """
+import logging
 import requests
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 from bs4 import BeautifulSoup
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+logger = logging.getLogger(__name__)
 
 
 class BrightDataScraper:
@@ -159,3 +162,91 @@ def merchant_intel(name: str, website=None) -> Dict:
         "overall_risk": risk_indicator,
         "data_source": "BrightData Residential Proxies"
     }
+
+
+class MerchantRiskService:
+    """Compute merchant risk scores using BrightData sentiment analysis."""
+
+    def __init__(self, scraper_cls=BrightDataScraper) -> None:
+        self._scraper_cls = scraper_cls
+        self._cache: Dict[str, float] = {}
+
+    def get_merchant_risk(self, merchant_name: str) -> float:
+        if not merchant_name:
+            logger.warning("Merchant name is empty; returning neutral risk.")
+            return 0.5
+
+        key = merchant_name.strip().lower()
+        if key in self._cache:
+            logger.debug("MerchantRiskService cache hit for '%s'", merchant_name)
+            return self._cache[key]
+
+        logger.debug("MerchantRiskService cache miss for '%s'", merchant_name)
+
+        try:
+            logger.info("MerchantRiskService querying BrightData for '%s'", merchant_name)
+            scraper = self._scraper_cls()
+            data = scraper.scrape_merchant_reviews(merchant_name)
+        except Exception:
+            logger.exception("BrightData scrape failed for '%s'", merchant_name)
+            risk_score = 0.5
+        else:
+            risk_score = self._convert_to_risk_score(data)
+
+        self._cache[key] = risk_score
+        return risk_score
+
+    def _convert_to_risk_score(self, data: Optional[Dict]) -> float:
+        if not data:
+            logger.warning("BrightData returned no data; defaulting to neutral risk.")
+            return 0.5
+
+        risk_indicator = (data.get("risk_indicator") or "UNKNOWN").upper()
+        sentiment_score = self._safe_float(data.get("sentiment_score"), default=0.0)
+        fraud_keywords = data.get("fraud_keywords_found") or []
+
+        base_range = self._risk_range(risk_indicator)
+        if base_range is None:
+            logger.debug("Unknown risk indicator '%s'; defaulting to neutral risk.", risk_indicator)
+            return 0.5
+
+        base_min, base_max = base_range
+        range_mid = (base_min + base_max) / 2.0
+
+        sentiment_clamped = max(-1.0, min(1.0, sentiment_score))
+        # Negative sentiment raises risk, positive sentiment lowers risk.
+        sentiment_adjust = -0.1 * sentiment_clamped
+
+        fraud_count = len(fraud_keywords)
+        keyword_adjust = min(fraud_count * 0.02, 0.12)
+
+        raw_score = range_mid + sentiment_adjust + keyword_adjust
+        risk_score = max(base_min, min(base_max, raw_score))
+        logger.debug(
+            "Risk conversion for indicator=%s, sentiment=%.2f, fraud_count=%d -> %.3f",
+            risk_indicator,
+            sentiment_score,
+            fraud_count,
+            risk_score,
+        )
+        return round(risk_score, 3)
+
+    @staticmethod
+    def _risk_range(indicator: str) -> Optional[Tuple[float, float]]:
+        ranges = {
+            "CRITICAL": (0.75, 0.90),
+            "HIGH": (0.55, 0.70),
+            "MEDIUM": (0.35, 0.50),
+            "LOW": (0.1, 0.30),
+        }
+        return ranges.get(indicator)
+
+    @staticmethod
+    def _safe_float(value, default: float = 0.0) -> float:
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return default
+
+
+MERCHANT_SERVICE = MerchantRiskService()

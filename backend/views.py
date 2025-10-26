@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.dateparse import parse_datetime
+from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from types import SimpleNamespace
 from .models import Transaction, Merchant
 from .serializers import TransactionSerializer, MerchantSerializer
 from .services.ml.anomaly_detector import AnomalyDetector
@@ -213,18 +215,45 @@ def ml_score_transaction(request):
             if field not in data:
                 return Response({f"{field}": ["This field is required."]}, status=400)
         
-        # Create temporary transaction object for scoring
-        from .models import Transaction
-        temp_transaction = Transaction(
-            amount=data.get('amount'),
-            merchant_id=data.get('merchant') if isinstance(data.get('merchant'), int) else None,
-            timestamp=data.get('timestamp'),
-            user_id=data.get('user_id', 1)  # default demo user
+        # Resolve merchant details
+        merchant_value = data.get('merchant')
+        merchant_name = data.get('merchant_name') or data.get('merchant_display') or None
+        merchant_obj = None
+        
+        if isinstance(merchant_value, int):
+            merchant_obj = Merchant.objects.filter(id=merchant_value).first()
+            if not merchant_obj and merchant_name:
+                merchant_obj = SimpleNamespace(name=str(merchant_name))
+            elif not merchant_obj:
+                merchant_obj = SimpleNamespace(name=f"Merchant {merchant_value}")
+        elif merchant_value:
+            merchant_obj = SimpleNamespace(name=str(merchant_value))
+        
+        # Construct timestamp for scoring
+        timestamp = None
+        if data.get('timestamp'):
+            timestamp = parse_datetime(str(data.get('timestamp')))
+        elif data.get('hour') is not None:
+            now = timezone.now()
+            try:
+                hour = int(data.get('hour'))
+                timestamp = now.replace(hour=hour, minute=0, second=0, microsecond=0)
+            except (ValueError, TypeError):
+                timestamp = now
+        else:
+            timestamp = timezone.now()
+        
+        transaction = SimpleNamespace(
+            amount=data.get('amount', 0),
+            merchant=merchant_obj,
+            timestamp=timestamp,
+            risk_score=data.get('risk_score', 0),
+            features=data.get('features', {})
         )
         
         # Score using ML
         detector = AnomalyDetector()
-        risk_score, is_anomaly = detector.score_transaction(temp_transaction)
+        risk_score, is_anomaly = detector.score_transaction(transaction)
         
         return Response({
             "risk_score": risk_score,

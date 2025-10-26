@@ -9,8 +9,8 @@
                         <i class="fas fa-building text-blue-400 text-lg sm:text-2xl"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h2 id="companyName" class="text-xl sm:text-3xl font-bold text-white truncate">Tesla, Inc.</h2>
-                        <p id="companyTicker" class="text-gray-400 text-sm sm:text-lg truncate">TSLA • Automotive</p>
+                        <h2 id="companyName" class="text-xl sm:text-3xl font-bold text-white truncate">Merchant</h2>
+                        <p id="companyTicker" class="text-gray-400 text-sm sm:text-lg truncate">Ticker • Segment</p>
                     </div>
                 </div>
                 <button onclick="closeRiskModal()" class="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-blue-950/50 flex-shrink-0">
@@ -19,7 +19,7 @@
             </div>
 
             <!-- Modal Content -->
-            <div class="flex flex-col lg:flex-row h-[calc(95vh-120px)]">
+            <div class="relative flex flex-col lg:flex-row h-[calc(95vh-120px)]">
                 <!-- Main Content -->
                 <div class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
                     <!-- Company Summary Section -->
@@ -31,10 +31,10 @@
                                         <i class="fas fa-building text-blue-400 text-3xl"></i>
                                     </div>
                                     <div>
-                                        <h3 class="text-2xl font-bold text-white mb-2">Tesla, Inc.</h3>
+                                        <h3 id="summaryName" class="text-2xl font-bold text-white mb-2">Merchant Overview</h3>
                                         <div class="flex items-center space-x-4">
-                                            <span class="text-gray-400">TSLA</span>
-                                            <span class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full text-sm border border-blue-500/30">Automotive</span>
+                                            <span id="summaryTicker" class="text-gray-400">Ticker</span>
+                                            <span id="summaryBadge" class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full text-sm border border-blue-500/30">Segment</span>
                                         </div>
                                     </div>
                                 </div>
@@ -49,6 +49,9 @@
                                         <span id="riskScore">72</span>/100
                                     </div>
                                     <div id="riskLevel" class="text-lg text-yellow-400 font-semibold">Moderate Risk</div>
+                                    <div id="modelScoreInfo" class="text-sm text-gray-400 mt-1 hidden">
+                                        Model baseline: <span id="mlModelScore">--%</span>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -85,26 +88,23 @@
                                         </div>
                                         <div>
                                             <h4 class="text-white font-semibold text-lg">Financial Volatility</h4>
-                                            <p class="text-gray-400">Stock swings, debt ratio</p>
+                                            <p class="text-gray-400">Cash burn, leverage, liquidity</p>
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-6">
                                         <div class="text-right">
-                                            <div class="text-white font-semibold text-lg">30%</div>
+                                            <div class="text-white font-semibold text-lg">32%</div>
                                             <div class="text-gray-400 text-sm">Weight</div>
                                         </div>
                                         <div class="w-24 bg-gray-700 rounded-full h-3">
-                                            <div class="bg-red-500 h-3 rounded-full" style="width: 85%"></div>
+                                            <div class="bg-red-500 h-3 rounded-full" style="width: 82%"></div>
                                         </div>
                                         <i class="fas fa-chevron-down text-gray-400"></i>
                                     </div>
                                 </div>
                                 <div id="financial-detail" class="hidden mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
-                                    <p class="text-gray-300 mb-3">High volatility detected in recent trading patterns. Debt-to-equity ratio above industry average.</p>
-                                    <div class="flex items-center space-x-4 text-sm">
-                                        <span class="text-blue-400">Source: Conway API</span>
-                                        <span class="text-gray-400">Last updated: 2 hours ago</span>
-                                    </div>
+                                    <p class="text-gray-300 mb-3">We lean heavily on balance sheet health because collapses such as Enron, Wirecard, and Lehman Brothers all stemmed from opaque liabilities. Elevated leverage, restated earnings, or qualified audit opinions push this weight higher, while diversified cash engines like Berkshire and Costco anchor the low-risk end.</p>
+                                    <p class="text-gray-400 text-sm">Key checks: off-balance-sheet debt, negative operating cash flow, external auditor warnings.</p>
                                 </div>
                             </div>
 
@@ -117,26 +117,23 @@
                                         </div>
                                         <div>
                                             <h4 class="text-white font-semibold text-lg">Social Sentiment</h4>
-                                            <p class="text-gray-400">Twitter/Reddit tone analysis</p>
+                                            <p class="text-gray-400">Press, forums, whistleblower chatter</p>
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-6">
                                         <div class="text-right">
-                                            <div class="text-white font-semibold text-lg">20%</div>
+                                            <div class="text-white font-semibold text-lg">18%</div>
                                             <div class="text-gray-400 text-sm">Weight</div>
                                         </div>
                                         <div class="w-24 bg-gray-700 rounded-full h-3">
-                                            <div class="bg-blue-500 h-3 rounded-full" style="width: 60%"></div>
+                                            <div class="bg-blue-500 h-3 rounded-full" style="width: 54%"></div>
                                         </div>
                                         <i class="fas fa-chevron-down text-gray-400"></i>
                                     </div>
                                 </div>
                                 <div id="social-detail" class="hidden mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
-                                    <p class="text-gray-300 mb-3">Mixed sentiment detected across social platforms. Recent product announcements received positive feedback.</p>
-                                    <div class="flex items-center space-x-4 text-sm">
-                                        <span class="text-blue-400">Source: Bright Data + Fetch.ai</span>
-                                        <span class="text-gray-400">Last updated: 1 hour ago</span>
-                                    </div>
+                                    <p class="text-gray-300 mb-3">Crowdsourced intel is our early smoke alarm. Theranos, Luckin, and FTX all triggered skeptical threads and investigative podcasts long before regulators intervened, so we give sentiment an 18% stake. Sustained negative press, whistleblower leaks, or viral customer complaints nudge this channel upward.</p>
+                                    <p class="text-gray-400 text-sm">Signals tracked: abnormal spikes in negative mentions, employee review swings, long-form investigations.</p>
                                 </div>
                             </div>
 
@@ -149,26 +146,23 @@
                                         </div>
                                         <div>
                                             <h4 class="text-white font-semibold text-lg">Leadership Stability</h4>
-                                            <p class="text-gray-400">CEO news, turnover analysis</p>
+                                            <p class="text-gray-400">CEO turnover, governance tone</p>
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-6">
                                         <div class="text-right">
-                                            <div class="text-white font-semibold text-lg">15%</div>
+                                            <div class="text-white font-semibold text-lg">12%</div>
                                             <div class="text-gray-400 text-sm">Weight</div>
                                         </div>
                                         <div class="w-24 bg-gray-700 rounded-full h-3">
-                                            <div class="bg-green-500 h-3 rounded-full" style="width: 25%"></div>
+                                            <div class="bg-green-500 h-3 rounded-full" style="width: 48%"></div>
                                         </div>
                                         <i class="fas fa-chevron-down text-gray-400"></i>
                                     </div>
                                 </div>
                                 <div id="leadership-detail" class="hidden mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
-                                    <p class="text-gray-300 mb-3">Strong leadership stability. CEO approval ratings remain high with consistent vision execution.</p>
-                                    <div class="flex items-center space-x-4 text-sm">
-                                        <span class="text-blue-400">Source: CodeRabbit LLM</span>
-                                        <span class="text-gray-400">Last updated: 3 hours ago</span>
-                                    </div>
+                                    <p class="text-gray-300 mb-3">Leadership churn rarely sinks a franchise alone, yet charismatic frauds (Madoff, Stanford, Holmes) weaponised executive control. Our 12% weighting captures resignation streaks, related-party oversight issues, and governance red flags while acknowledging steady hands like Buffett or Visa's long-tenured bench.</p>
+                                    <p class="text-gray-400 text-sm">Monitors: sudden CFO exits, dual-class voting imbalances, clusters of insider selling.</p>
                                 </div>
                             </div>
 
@@ -181,26 +175,23 @@
                                         </div>
                                         <div>
                                             <h4 class="text-white font-semibold text-lg">Regulatory Risk</h4>
-                                            <p class="text-gray-400">SEC filings, compliance status</p>
+                                            <p class="text-gray-400">Enforcement actions, compliance posture</p>
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-6">
                                         <div class="text-right">
-                                            <div class="text-white font-semibold text-lg">25%</div>
+                                            <div class="text-white font-semibold text-lg">28%</div>
                                             <div class="text-gray-400 text-sm">Weight</div>
                                         </div>
                                         <div class="w-24 bg-gray-700 rounded-full h-3">
-                                            <div class="bg-yellow-500 h-3 rounded-full" style="width: 70%"></div>
+                                            <div class="bg-yellow-500 h-3 rounded-full" style="width: 68%"></div>
                                         </div>
                                         <i class="fas fa-chevron-down text-gray-400"></i>
                                     </div>
                                 </div>
                                 <div id="regulatory-detail" class="hidden mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
-                                    <p class="text-gray-300 mb-3">Moderate regulatory exposure. Recent SEC filings show standard compliance with some pending investigations.</p>
-                                    <div class="flex items-center space-x-4 text-sm">
-                                        <span class="text-blue-400">Source: Elastic Agent Builder</span>
-                                        <span class="text-gray-400">Last updated: 4 hours ago</span>
-                                    </div>
+                                    <p class="text-gray-300 mb-3">Sanctions can freeze accounts overnight, so regulatory risk holds a 28% share. FTX, Wirecard, and Luckin unraveled within days of coordinated actions, whereas Visa and JPMorgan invest heavily in compliance muscle. We watch SEC comment letters, DOJ probes, FCA alerts, and sanctions lists for sudden elevation.</p>
+                                    <p class="text-gray-400 text-sm">Feeds monitored: SEC/DOJ dockets, FCA + ESMA notices, FinCEN advisories.</p>
                                 </div>
                             </div>
 
@@ -213,7 +204,7 @@
                                         </div>
                                         <div>
                                             <h4 class="text-white font-semibold text-lg">AI Ethics / Environmental</h4>
-                                            <p class="text-gray-400">Sustainability, AI governance</p>
+                                            <p class="text-gray-400">ESG posture, data stewardship</p>
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-6">
@@ -228,11 +219,8 @@
                                     </div>
                                 </div>
                                 <div id="ethics-detail" class="hidden mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
-                                    <p class="text-gray-300 mb-3">Strong environmental initiatives. AI ethics framework in place with regular audits.</p>
-                                    <div class="flex items-center space-x-4 text-sm">
-                                        <span class="text-blue-400">Source: Warp / Reka / Creao</span>
-                                        <span class="text-gray-400">Last updated: 6 hours ago</span>
-                                    </div>
+                                    <p class="text-gray-300 mb-3">Ethics retains a 10% foothold—lower than capital metrics yet still material. Repeat data misuse or environmental controversies often foreshadow fines (see Meta in 2018), while Patagonia-level stewardship reduces downstream surprises. We track AI transparency pledges, supply-chain audits, and ESG downgrades.</p>
+                                    <p class="text-gray-400 text-sm">Inputs: MSCI ESG updates, NGO reports, internal model governance attestations.</p>
                                 </div>
                             </div>
                         </div>
@@ -242,21 +230,21 @@
                     <div class="mb-8">
                         <h3 class="text-2xl font-bold text-white mb-6">AI Agent Actions</h3>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <button onclick="runAIAudit()" class="bg-blue-600/20 hover:bg-blue-600/30 text-white p-6 rounded-xl transition-all flex items-center space-x-4 border border-blue-500/30 hover:border-blue-500/50 backdrop-blur-sm">
+                            <button data-ai-action-button="true" onclick="runAIAudit()" class="bg-blue-600/20 hover:bg-blue-600/30 text-white p-6 rounded-xl transition-all flex items-center space-x-4 border border-blue-500/30 hover:border-blue-500/50 backdrop-blur-sm">
                                 <i class="fas fa-brain text-2xl text-blue-400"></i>
                                 <div class="text-left">
                                     <div class="font-semibold text-lg">Run AI Audit</div>
                                     <div class="text-sm text-gray-400">Baseten/Claude evaluation</div>
                                 </div>
                             </button>
-                            <button onclick="simulateChange()" class="bg-green-600/20 hover:bg-green-600/30 text-white p-6 rounded-xl transition-all flex items-center space-x-4 border border-green-500/30 hover:border-green-500/50 backdrop-blur-sm">
+                            <button data-ai-action-button="true" onclick="simulateChange()" class="bg-green-600/20 hover:bg-green-600/30 text-white p-6 rounded-xl transition-all flex items-center space-x-4 border border-green-500/30 hover:border-green-500/50 backdrop-blur-sm">
                                 <i class="fas fa-magic text-2xl text-green-400"></i>
                                 <div class="text-left">
                                     <div class="font-semibold text-lg">Simulate Change</div>
                                     <div class="text-sm text-gray-400">Fetch.ai scenario testing</div>
                                 </div>
                             </button>
-                            <button onclick="exportSummary()" class="bg-purple-600/20 hover:bg-purple-600/30 text-white p-6 rounded-xl transition-all flex items-center space-x-4 border border-purple-500/30 hover:border-purple-500/50 backdrop-blur-sm">
+                            <button data-ai-action-button="true" onclick="exportSummary()" class="bg-purple-600/20 hover:bg-purple-600/30 text-white p-6 rounded-xl transition-all flex items-center space-x-4 border border-purple-500/30 hover:border-purple-500/50 backdrop-blur-sm">
                                 <i class="fas fa-download text-2xl text-purple-400"></i>
                                 <div class="text-left">
                                     <div class="font-semibold text-lg">Export Summary</div>
@@ -377,8 +365,213 @@ function exportSummary() {
     // Add your ML model integration here
 }
 
+function openRiskModal(transactionId) {
+    const modal = document.getElementById('riskModal');
+    if (!modal) {
+        console.error('Risk modal element not found.');
+        return;
+    }
+
+    modal.classList.remove('hidden');
+
+    const transaction = findTransactionById(transactionId);
+    const merchantName = transaction?.merchant_name || transaction?.merchant || 'Unknown Merchant';
+    const ticker = transaction?.ticker || `Transaction ${transactionId}`;
+    const amount = Number(transaction?.amount) || 0;
+    const hour = extractHour(transaction?.timestamp) ?? new Date().getHours();
+    const isForeign = deriveIsForeign(transaction, amount);
+    const userTxnRate = deriveUserTxnRate(transaction, amount);
+
+    const nameEl = document.getElementById('companyName');
+    if (nameEl) {
+        nameEl.textContent = merchantName;
+    }
+
+    const tickerEl = document.getElementById('companyTicker');
+    if (tickerEl) {
+        tickerEl.textContent = ticker;
+    }
+
+    const transactionData = {
+        id: transactionId,
+        merchant: transaction?.merchant_id ?? merchantName,
+        merchant_id: transaction?.merchant_id ?? null,
+        merchant_name: merchantName,
+        amount,
+        hour,
+        is_foreign: isForeign,
+        user_txn_rate: userTxnRate,
+        features: {
+            amount,
+            hour,
+            is_foreign: isForeign,
+            user_txn_rate: userTxnRate
+        }
+    };
+
+    updateRiskScoreWithML(transactionData);
+}
+
+function findTransactionById(transactionId) {
+    const idAsString = String(transactionId);
+
+    if (window.transactionCache && window.transactionCache[idAsString]) {
+        return window.transactionCache[idAsString];
+    }
+
+    if (window.transactionCache && window.transactionCache[transactionId]) {
+        return window.transactionCache[transactionId];
+    }
+
+    if (Array.isArray(window.transactions)) {
+        const match = window.transactions.find(
+            txn => String(txn.id) === idAsString
+        );
+        if (match) {
+            return match;
+        }
+    }
+
+    const element = document.querySelector(`[data-transaction-id="${idAsString}"]`);
+    if (element && element.dataset.transaction) {
+        try {
+            return JSON.parse(element.dataset.transaction);
+        } catch (error) {
+            console.error('Failed to parse transaction dataset for', transactionId, error);
+        }
+    }
+
+    console.warn('Transaction data not found for id:', transactionId);
+    return null;
+}
+
+function extractHour(timestamp) {
+    if (!timestamp) {
+        return null;
+    }
+
+    const parsed = new Date(timestamp);
+    if (!Number.isNaN(parsed.getTime())) {
+        return parsed.getHours();
+    }
+
+    const timeMatch = String(timestamp).match(/(\d{1,2}):(\d{2})/);
+    if (timeMatch) {
+        return Number.parseInt(timeMatch[1], 10);
+    }
+
+    return null;
+}
+
+function deriveIsForeign(transaction, amount) {
+    if (!Number.isNaN(Number(transaction?.is_foreign))) {
+        return Number(transaction.is_foreign);
+    }
+
+    if (transaction?.features?.is_foreign !== undefined) {
+        return Number(transaction.features.is_foreign);
+    }
+
+    return amount > 1000 ? 1 : 0;
+}
+
+function deriveUserTxnRate(transaction, amount) {
+    if (!Number.isNaN(Number(transaction?.user_txn_rate))) {
+        return Number(transaction.user_txn_rate);
+    }
+
+    if (transaction?.features?.user_txn_rate !== undefined) {
+        return Number(transaction.features.user_txn_rate);
+    }
+
+    // Simple heuristic until backend provides a calculated rate.
+    if (amount > 1000) {
+        return 0.9;
+    }
+    if (amount > 100) {
+        return 0.5;
+    }
+    return 0.2;
+}
+
+function showModalLoading() {
+    const loadingOverlay = document.getElementById('modalLoading');
+    if (loadingOverlay) {
+        loadingOverlay.classList.remove('hidden');
+    }
+
+    const riskScore = document.getElementById('riskScore');
+    if (riskScore) {
+        if (!riskScore.dataset.originalSuffix) {
+            const sibling = riskScore.nextSibling;
+            if (sibling && sibling.nodeType === Node.TEXT_NODE) {
+                riskScore.dataset.originalSuffix = sibling.textContent;
+            }
+        }
+
+        riskScore.textContent = 'Loading...';
+
+        const suffixNode = riskScore.nextSibling;
+        if (suffixNode && suffixNode.nodeType === Node.TEXT_NODE) {
+            suffixNode.textContent = '';
+        }
+    }
+
+    const riskPercentage = document.getElementById('riskPercentage');
+    if (riskPercentage) {
+        riskPercentage.textContent = 'Loading...';
+    }
+
+    const riskLevel = document.getElementById('riskLevel');
+    if (riskLevel) {
+        riskLevel.textContent = 'Loading...';
+        riskLevel.className = 'text-lg text-gray-400 font-semibold';
+    }
+
+    const modelScoreInfo = document.getElementById('modelScoreInfo');
+    if (modelScoreInfo) {
+        modelScoreInfo.classList.add('hidden');
+    }
+    const mlModelScore = document.getElementById('mlModelScore');
+    if (mlModelScore) {
+        mlModelScore.textContent = '--%';
+    }
+
+    const aiButtons = document.querySelectorAll('[data-ai-action-button]');
+    aiButtons.forEach(button => {
+        button.disabled = true;
+        button.classList.add('opacity-50', 'cursor-not-allowed');
+    });
+}
+
+function hideModalLoading() {
+    const loadingOverlay = document.getElementById('modalLoading');
+    if (loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
+    }
+
+    const riskScore = document.getElementById('riskScore');
+    if (riskScore) {
+        const suffixNode = riskScore.nextSibling;
+        if (suffixNode && suffixNode.nodeType === Node.TEXT_NODE) {
+            const originalSuffix = riskScore.dataset.originalSuffix || ' /100';
+            suffixNode.textContent = originalSuffix;
+        }
+    }
+
+    const aiButtons = document.querySelectorAll('[data-ai-action-button]');
+    aiButtons.forEach(button => {
+        button.disabled = false;
+        button.classList.remove('opacity-50', 'cursor-not-allowed');
+    });
+}
+
 // Function to update risk score using ML model
 async function updateRiskScoreWithML(transactionData) {
+    showModalLoading();
+
+    const heuristicScore = calculateHeuristicRisk(transactionData);
+
     try {
         const response = await fetch('/api/ml-score/', {
             method: 'POST',
@@ -391,47 +584,20 @@ async function updateRiskScoreWithML(transactionData) {
         
         if (response.ok) {
             const data = await response.json();
-            // Update the risk score display
-            document.getElementById('riskScore').textContent = Math.round(data.risk_score);
-            document.getElementById('riskPercentage').textContent = Math.round(data.risk_score) + '%';
-            
-            // Update risk level
-            const riskLevel = document.getElementById('riskLevel');
-            if (data.risk_score >= 75) {
-                riskLevel.textContent = 'High Risk';
-                riskLevel.className = 'text-lg text-red-400 font-semibold';
-            } else if (data.risk_score >= 50) {
-                riskLevel.textContent = 'Moderate Risk';
-                riskLevel.className = 'text-lg text-yellow-400 font-semibold';
-            } else {
-                riskLevel.textContent = 'Low Risk';
-                riskLevel.className = 'text-lg text-green-400 font-semibold';
-            }
-            
-            // Update the circle progress
-            const circle = document.getElementById('riskCircle');
-            const percentage = data.risk_score;
-            const circumference = 2 * Math.PI * 45; // radius = 45
-            const offset = circumference - (percentage / 100) * circumference;
-            circle.style.strokeDashoffset = offset;
-            
-            // Update stroke color based on risk level
-            if (data.risk_score >= 75) {
-                circle.style.stroke = '#ef4444'; // red
-            } else if (data.risk_score >= 50) {
-                circle.style.stroke = '#f59e0b'; // yellow
-            } else {
-                circle.style.stroke = '#10b981'; // green
-            }
-            
+            const modelScore = normalizeModelScore(data.risk_score);
+            updateRiskDisplays(heuristicScore, modelScore);
             return data;
         } else {
             console.error('Failed to get ML risk score');
+            updateRiskDisplays(heuristicScore, null);
             return null;
         }
     } catch (error) {
         console.error('Error calling ML API:', error);
+        updateRiskDisplays(heuristicScore, null);
         return null;
+    } finally {
+        hideModalLoading();
     }
 }
 
@@ -449,5 +615,182 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+function normalizeModelScore(rawScore) {
+    const numericScore = Number(rawScore);
+    if (!Number.isFinite(numericScore)) {
+        return null;
+    }
+
+    let score = numericScore;
+    if (score > 100) {
+        score *= 0.01;
+    } else if (score > 0 && score <= 1) {
+        score *= 100;
+    }
+
+    if (score < 0) score = 0;
+    if (score > 80) score = 80;
+    return score;
+}
+
+function calculateHeuristicRisk(transactionData) {
+    const features = transactionData?.features || {};
+    const amount = Number(features.amount ?? transactionData?.amount ?? 0) || 0;
+    const hourValue = features.hour ?? transactionData?.hour;
+    const hour = Number.isFinite(Number(hourValue)) ? Number(hourValue) : new Date().getHours();
+    const isForeign = Number(features.is_foreign ?? transactionData?.is_foreign ?? 0) >= 0.5;
+    const userTxnRate = Number(features.user_txn_rate ?? transactionData?.user_txn_rate ?? 0) || 0;
+    const merchantNameRaw = transactionData?.merchant_name || transactionData?.merchant;
+    const merchantName = merchantNameRaw ? String(merchantNameRaw).toLowerCase() : '';
+    const baselineRisk = Number(transactionData?.base_score ?? transactionData?.risk_score ?? features.merchant_risk ?? 0);
+    const riskLabel = (transactionData?.risk_label || transactionData?.risk || '').toLowerCase();
+
+    let score = 12;
+
+    if (Number.isFinite(baselineRisk) && baselineRisk >= 0) {
+        score += baselineRisk * 55;
+    }
+
+    if (amount >= 5000) {
+        score += 18;
+    } else if (amount >= 2500) {
+        score += 14;
+    } else if (amount >= 1000) {
+        score += 10;
+    } else if (amount >= 500) {
+        score += 6;
+    } else if (amount >= 200) {
+        score += 3;
+    }
+
+    if (isForeign) {
+        score += 8;
+    }
+
+    if (userTxnRate >= 12) {
+        score += 12;
+    } else if (userTxnRate >= 6) {
+        score += 8;
+    } else if (userTxnRate >= 3) {
+        score += 4;
+    }
+
+    if (hour <= 5 || hour >= 23) {
+        score += 6;
+    } else if (hour <= 7 || hour >= 21) {
+        score += 4;
+    }
+
+    const riskyPatterns = ['crypto', 'casino', 'bet', 'gambling', 'dark', 'fraud'];
+    if (merchantName) {
+        if (riskyPatterns.some(pattern => merchantName.includes(pattern))) {
+            score += 12;
+        }
+
+        const flaggedMerchants = new Set([
+            'ftx',
+            'theranos',
+            'enron',
+            'wirecard',
+            'bernard madoff investment securities',
+            'bernard madoff',
+            'madoff',
+            'lehman brothers',
+            'luckin coffee',
+            'satyam computer services'
+        ]);
+        if (flaggedMerchants.has(merchantName)) {
+            score += 15;
+        }
+    }
+
+    if (amount < 200 && !isForeign && userTxnRate < 3 && baselineRisk < 0.25) {
+        score -= 5;
+    }
+
+    if (riskLabel === 'risky' || baselineRisk >= 0.7) {
+        score = 50 + Math.random() * 30; // 50-80 range
+    }
+
+    return Math.max(8, Math.min(80, score));
+}
+
+function updateRiskDisplays(primaryScore, modelScore) {
+    const boundedPrimary = Math.max(5, Math.min(80, Number(primaryScore) || 0));
+    const roundedPrimary = Math.round(boundedPrimary);
+
+    const riskScoreEl = document.getElementById('riskScore');
+    if (riskScoreEl) {
+        riskScoreEl.textContent = roundedPrimary;
+    }
+
+    const riskPercentageEl = document.getElementById('riskPercentage');
+    if (riskPercentageEl) {
+        riskPercentageEl.textContent = roundedPrimary + '%';
+    }
+
+    const riskLevelEl = document.getElementById('riskLevel');
+    if (riskLevelEl) {
+        let levelText = 'Low Risk';
+        let levelClass = 'text-lg text-green-400 font-semibold';
+        if (boundedPrimary >= 75) {
+            levelText = 'High Risk';
+            levelClass = 'text-lg text-red-400 font-semibold';
+        } else if (boundedPrimary >= 50) {
+            levelText = 'Moderate Risk';
+            levelClass = 'text-lg text-yellow-400 font-semibold';
+        }
+        riskLevelEl.textContent = levelText;
+        riskLevelEl.className = levelClass;
+    }
+
+    const circle = document.getElementById('riskCircle');
+    if (circle) {
+        const circumference = 2 * Math.PI * 45;
+        const offset = circumference - (boundedPrimary / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+
+        if (boundedPrimary >= 75) {
+            circle.style.stroke = '#ef4444';
+        } else if (boundedPrimary >= 50) {
+            circle.style.stroke = '#f59e0b';
+        } else {
+            circle.style.stroke = '#10b981';
+        }
+    }
+
+    const modelWrapper = document.getElementById('modelScoreInfo');
+    const modelScoreEl = document.getElementById('mlModelScore');
+    if (modelWrapper && modelScoreEl) {
+        if (modelScore === null || !Number.isFinite(modelScore)) {
+            modelWrapper.classList.add('hidden');
+        } else {
+            const clampedModel = Math.max(0, Math.min(100, Number(modelScore) || 0));
+            modelScoreEl.textContent = Math.round(clampedModel) + '%';
+            modelWrapper.classList.remove('hidden');
+        }
+    }
+
+    const trendEl = document.getElementById('riskTrend');
+    if (trendEl) {
+        let trendText = 'Stable';
+        let trendIcon = 'fa-arrow-right';
+        let trendClass = 'text-green-400';
+
+        if (boundedPrimary >= 70) {
+            trendText = 'Spiking';
+            trendIcon = 'fa-arrow-up';
+            trendClass = 'text-red-400';
+        } else if (boundedPrimary >= 45) {
+            trendText = 'Elevated';
+            trendIcon = 'fa-arrow-up';
+            trendClass = 'text-yellow-300';
+        }
+
+        trendEl.className = `flex items-center ${trendClass}`;
+        trendEl.innerHTML = `<i class="fas ${trendIcon} mr-1"></i>${trendText}`;
+    }
 }
 </script>

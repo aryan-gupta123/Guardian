@@ -14,6 +14,7 @@ import numpy as np
 from sklearn.ensemble import IsolationForest
 
 from .explainer import default_reasons
+from .merchant_service import MERCHANT_SERVICE
 
 logger = logging.getLogger(__name__)
 
@@ -142,7 +143,12 @@ class RiskScorer:
 
             reasons = default_reasons(features_dict, normalized_score)
             results.append(
-                {"id": txn_id, "score": normalized_score, "reasons": reasons}
+                {
+                    "id": txn_id,
+                    "score": normalized_score,
+                    "merchant_risk": features_dict.get("merchant_risk", 0.5),
+                    "reasons": reasons,
+                }
             )
 
         return results
@@ -207,6 +213,8 @@ class RiskScorer:
         for name in self.FEATURES:
             raw_value = features.get(name, self.DEFAULT_FEATURES[name])
             clean[name] = self._sanitize_feature(name, raw_value)
+        # Override merchant_risk with dynamic BrightData lookup
+        clean["merchant_risk"] = self._get_merchant_risk_for_transaction(txn)
         return clean
 
     def _sanitize_feature(self, name: str, value: object) -> float:
@@ -248,6 +256,34 @@ class RiskScorer:
         if not isinstance(identifier, str) or not identifier:
             identifier = f"txn_{index}"
         return identifier
+
+    def _get_merchant_risk_for_transaction(self, txn: Mapping) -> float:
+        """
+        Resolve a merchant risk score for the provided transaction.
+        """
+        merchant_name = None
+        if isinstance(txn, Mapping):
+            merchant_name = txn.get("merchant_name")
+            if not merchant_name:
+                features = txn.get("features")
+                if isinstance(features, Mapping):
+                    merchant_name = features.get("merchant_name")
+
+        if merchant_name:
+            logger.info("Fetching merchant risk for %s", merchant_name)
+            try:
+                risk = float(MERCHANT_SERVICE.get_merchant_risk(merchant_name))
+                # Dampen merchant_risk influence (reduce impact on final score)
+                dampened_risk = risk * 0.30  # Apply 15% weight instead of 100%
+                return dampened_risk
+            except Exception as exc:  # noqa: BLE001 - we must not raise here.
+                logger.exception(
+                    "Failed to fetch merchant risk for %s: %s", merchant_name, exc
+                )
+                return 0.5
+
+        logger.info("No merchant name provided, using default risk 0.5")
+        return 0.5
 
 
 SCORER = RiskScorer()

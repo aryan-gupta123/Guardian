@@ -234,11 +234,14 @@
                     <div class="space-y-4" id="transactionCards">
                         {% for transaction in transactions %}
                         <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-4 sm:p-6 backdrop-blur-sm hover:bg-blue-950/40 transition-all cursor-pointer" onclick="openRiskModal({
-                            merchant: '{{ transaction.merchant }}',
+                            id: {{ transaction.id }},
+                            merchant: '{{ transaction.merchant|escapejs }}',
+                            merchantId: {{ transaction.merchant_id }},
                             amount: {{ transaction.amount }},
-                            risk: '{{ transaction.risk_level }}',
+                            risk: '{{ transaction.risk_level|escapejs }}',
                             score: {{ transaction.risk_score }},
-                            ticker: '{{ transaction.ticker|default:"N/A" }}'
+                            ticker: '{{ transaction.ticker|default:"N/A"|escapejs }}',
+                            timestamp: '{{ transaction.timestamp|escapejs }}'
                         })">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
                                 <div class="flex items-center space-x-3 sm:space-x-4">
@@ -402,79 +405,87 @@
         // Risk Modal Functions
         function openRiskModal(companyData) {
             const modal = document.getElementById('riskModal');
-            
-            // Show loading state
-            document.getElementById('companyName').textContent = companyData.merchant;
-            document.getElementById('companyTicker').textContent = companyData.ticker || 'N/A • Technology';
+
+            const merchantName = companyData.merchant || 'Unknown Merchant';
+            const tickerLabel = companyData.ticker ? `${companyData.ticker}` : 'N/A';
+
+            document.getElementById('companyName').textContent = merchantName;
+            document.getElementById('companyTicker').textContent = `${tickerLabel} • ${companyData.risk || 'Risk Profile'}`;
+
+            const summaryNameEl = document.getElementById('summaryName');
+            if (summaryNameEl) summaryNameEl.textContent = merchantName;
+
+            const summaryTickerEl = document.getElementById('summaryTicker');
+            if (summaryTickerEl) summaryTickerEl.textContent = tickerLabel;
+
+            const summaryBadgeEl = document.getElementById('summaryBadge');
+            if (summaryBadgeEl) {
+                const badgeConfig = getBadgeForRisk(companyData.risk);
+                summaryBadgeEl.textContent = badgeConfig.label;
+                summaryBadgeEl.className = `px-3 py-1 rounded-full text-sm border ${badgeConfig.classes}`;
+            }
+
             document.getElementById('riskScore').textContent = '...';
             document.getElementById('riskPercentage').textContent = '...';
-            document.getElementById('riskLevel').textContent = 'Analyzing...';
-            
+            document.getElementById('riskLevel').textContent = 'Pending';
+
+            const modelScoreInfo = document.getElementById('modelScoreInfo');
+            if (modelScoreInfo) {
+                modelScoreInfo.classList.add('hidden');
+            }
+
             modal.classList.remove('hidden');
-            
-            // Call ML API to get actual risk score using real transaction data
-            fetch('/api/ml-score/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({
-                    id: companyData.merchant.toLowerCase().replace(/\s+/g, '_'),
-                    amount: companyData.amount || 100.0,
-                    hour: new Date().getHours(),
-                    is_foreign: companyData.amount > 1000, // Higher amounts more likely foreign
-                    merchant_risk: getMerchantRisk(companyData.merchant), // Based on merchant name
-                    user_txn_rate: getTransactionRate(companyData.amount) // Based on amount
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('ML API Response:', data); // Debug log
-                if (data.status === 'success') {
-                    const riskScore = Math.round(data.risk_score * 100);
-                    const riskColor = getRiskColor(riskScore);
-                    const riskLevel = getRiskLevel(riskScore);
-                    
-                    console.log(`ML Risk Score: ${data.risk_score} (${riskScore}%)`); // Debug log
-                    console.log('ML Reasons:', data.reasons); // Debug log
-                    
-                    // Update UI with ML results
-                    document.getElementById('riskScore').textContent = riskScore;
-                    document.getElementById('riskPercentage').textContent = riskScore + '%';
-                    document.getElementById('riskLevel').textContent = riskLevel;
-                    document.getElementById('riskLevel').className = `text-lg font-semibold`;
-                    
-                    if (riskScore >= 80) {
-                        document.getElementById('riskLevel').classList.add('text-red-400');
-                    } else if (riskScore >= 60) {
-                        document.getElementById('riskLevel').classList.add('text-yellow-400');
-                    } else {
-                        document.getElementById('riskLevel').classList.add('text-green-400');
-                    }
-                    
-                    // Update circle progress
-                    const circle = document.getElementById('riskCircle');
-                    const circumference = 2 * Math.PI * 45; // Updated radius for new design
-                    const offset = circumference - (riskScore / 100) * circumference;
-                    circle.style.strokeDashoffset = offset;
-                    circle.style.stroke = riskColor;
-                    
-                    // Update risk breakdown with ML reasons
-                    updateRiskBreakdown(data.reasons);
-                } else {
-                    console.error('ML scoring failed:', data.error);
-                    // Fallback to random score
-                    const riskScore = Math.floor(Math.random() * 100);
-                    updateRiskScore(riskScore);
+
+            const merchantId = companyData.merchantId ?? companyData.merchant_id ?? null;
+            const timestamp = companyData.timestamp ? new Date(companyData.timestamp) : null;
+            const hour = Number.isFinite(timestamp?.getHours()) ? timestamp.getHours() : new Date().getHours();
+            const amount = Number(companyData.amount) || 0;
+            const isForeign = amount >= 1500;
+            const userTxnRate = getTransactionRate(amount);
+            const baseScore = Number(companyData.score);
+
+            const transactionData = {
+                id: companyData.id ?? merchantName.toLowerCase().replace(/\s+/g, '_'),
+                merchant: merchantName,
+                merchant_id: merchantId,
+                merchant_name: merchantName,
+                risk_label: companyData.risk || '',
+                amount,
+                hour,
+                is_foreign: isForeign ? 1 : 0,
+                user_txn_rate: userTxnRate,
+                base_score: baseScore,
+                features: {
+                    amount,
+                    hour,
+                    is_foreign: isForeign ? 1 : 0,
+                    user_txn_rate: userTxnRate,
+                    merchant_name: merchantName,
+                    merchant_risk: baseScore
                 }
-            })
-            .catch(error => {
-                console.error('Error calling ML API:', error);
-                // Fallback to random score
-                const riskScore = Math.floor(Math.random() * 100);
-                updateRiskScore(riskScore);
-            });
+            };
+
+            updateRiskScoreWithML(transactionData);
+        }
+
+        function getBadgeForRisk(riskLevel) {
+            const risk = (riskLevel || '').toLowerCase();
+            if (risk === 'risky') {
+                return {
+                    label: 'Watchlist',
+                    classes: 'bg-red-600/20 text-red-400 border-red-500/30'
+                };
+            }
+            if (risk === 'medium' || risk === 'warning') {
+                return {
+                    label: 'Under Review',
+                    classes: 'bg-yellow-600/20 text-yellow-300 border-yellow-500/30'
+                };
+            }
+            return {
+                label: 'Trusted',
+                classes: 'bg-green-600/20 text-green-400 border-green-500/30'
+            };
         }
 
         function closeRiskModal() {
