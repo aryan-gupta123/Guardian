@@ -5,6 +5,7 @@ Django settings for anomaly_detection project.
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url  # optional, handles DATABASE_URL if set
 
 # Load environment variables
 load_dotenv()
@@ -18,7 +19,9 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-change-this-in-production'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = ["calhacks-z5yy.onrender.com", "localhost", "127.0.0.1"]
+# Host + CORS/CSRF
+ALLOWED_HOSTS = ['calhacks-z5yy.onrender.com', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://calhacks-z5yy.onrender.com']
 
 # Application definition
 INSTALLED_APPS = [
@@ -69,8 +72,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'anomaly_detection.wsgi.application'
 
 # Database
-# Use SQLite for development, PostgreSQL for production
-if os.getenv('USE_POSTGRES', 'False').lower() == 'true':
+# Use DATABASE_URL if provided (Render/Postgres), else fallback to SQLite
+if os.getenv('DATABASE_URL'):
+    DATABASES = {'default': dj_database_url.parse(os.getenv('DATABASE_URL'))}
+elif os.getenv('USE_POSTGRES', 'False').lower() == 'true':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -82,7 +87,6 @@ if os.getenv('USE_POSTGRES', 'False').lower() == 'true':
         }
     }
 else:
-    # SQLite for development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -92,18 +96,10 @@ else:
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # Internationalization
@@ -115,31 +111,31 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [
-    BASE_DIR / 'frontend' / 'dist',
-]
+STATICFILES_DIRS = [p for p in [BASE_DIR / 'frontend' / 'dist'] if p.exists()]
 
-# WhiteNoise configuration for serving static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Media files (runtime-generated artifacts, audio, etc.)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # REST Framework settings
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ],
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-    ],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny'],
+    'DEFAULT_AUTHENTICATION_CLASSES': [],  # disables SessionAuth to avoid CSRF errors
+    'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],
 }
 
-# CORS settings
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000').split(',')
+# CORS (optional; single-origin setup doesn't need it, but safe to keep)
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    'https://calhacks-z5yy.onrender.com',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
 
-# Authentication settings
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/'
+# Security headers for Render
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'False').lower() == 'true'
+
