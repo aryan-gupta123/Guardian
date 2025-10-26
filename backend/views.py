@@ -6,6 +6,8 @@ from .models import Transaction, Merchant
 from .serializers import TransactionSerializer, MerchantSerializer
 from .services.ml.anomaly_detector import AnomalyDetector
 from .services.ml.explainability import ExplainabilityService
+from anomaly_detection.ml.scorer import SCORER
+from anomaly_detection.ml.bootstrap import bootstrap_fit
 
 # Homepage view
 def homepage(request):
@@ -119,5 +121,48 @@ def get_high_risk_transactions(request):
         
         serializer = TransactionSerializer(high_risk_transactions, many=True)
         return Response(serializer.data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+@api_view(['POST'])
+def ml_score_transaction(request):
+    """Score a transaction using the full ML model"""
+    try:
+        # Bootstrap the model if not already fitted
+        if not SCORER._fitted:
+            bootstrap_fit(SCORER)
+        
+        # Extract transaction data from request
+        transaction_data = request.data
+        
+        # Prepare features for ML model
+        features = {
+            "amount": transaction_data.get('amount', 0.0),
+            "hour": transaction_data.get('hour', 12),
+            "is_foreign": 1.0 if transaction_data.get('is_foreign', False) else 0.0,
+            "merchant_risk": transaction_data.get('merchant_risk', 0.0),
+            "user_txn_rate": transaction_data.get('user_txn_rate', 0.0)
+        }
+        
+        # Create transaction object for ML scoring
+        txn = {
+            "id": transaction_data.get('id', 'txn_001'),
+            "features": features
+        }
+        
+        # Score the transaction
+        result = SCORER.score_batch([txn])
+        
+        if result:
+            score_data = result[0]
+            return Response({
+                'transaction_id': score_data['id'],
+                'risk_score': score_data['score'],
+                'reasons': score_data['reasons'],
+                'status': 'success'
+            })
+        else:
+            return Response({'error': 'Failed to score transaction'}, status=500)
+            
     except Exception as e:
         return Response({'error': str(e)}, status=500)

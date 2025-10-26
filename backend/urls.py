@@ -15,6 +15,7 @@ urlpatterns = [
     # API Routes
     path('api/ingest/', views.ingest_transaction, name='ingest_transaction'),
     path('api/score/<int:transaction_id>/', views.score_transaction, name='score_transaction'),
+    path('api/ml-score/', views.ml_score_transaction, name='ml_score_transaction'),
     path('api/agents/act/', views.agent_action, name='agent_action'),
     path('api/merchant/<int:merchant_id>/', views.get_merchant, name='get_merchant'),
     path('api/explain/<int:transaction_id>/', views.explain_transaction, name='explain_transaction'),

@@ -1,90 +1,106 @@
 <!-- Risk Deep Dive Modal -->
 <div id="riskModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
-    <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-gray-900 rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden">
+    <div class="flex items-center justify-center min-h-screen p-2 sm:p-4">
+        <div class="bg-[#0a1628] rounded-2xl shadow-2xl w-full max-w-7xl max-h-[95vh] overflow-hidden border border-blue-900/50">
             <!-- Modal Header -->
-            <div class="flex items-center justify-between p-6 border-b border-gray-700">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-building text-white text-xl"></i>
+            <div class="flex items-center justify-between p-4 sm:p-6 border-b border-blue-950/50">
+                <div class="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/30 flex-shrink-0">
+                        <i class="fas fa-building text-blue-400 text-lg sm:text-2xl"></i>
                     </div>
-                    <div>
-                        <h2 id="companyName" class="text-2xl font-bold text-white">Tesla, Inc.</h2>
-                        <p id="companyTicker" class="text-gray-400">TSLA • Automotive</p>
+                    <div class="flex-1 min-w-0">
+                        <h2 id="companyName" class="text-xl sm:text-3xl font-bold text-white truncate">Tesla, Inc.</h2>
+                        <p id="companyTicker" class="text-gray-400 text-sm sm:text-lg truncate">TSLA • Automotive</p>
                     </div>
                 </div>
-                <button onclick="closeRiskModal()" class="text-gray-400 hover:text-white transition-colors">
-                    <i class="fas fa-times text-2xl"></i>
+                <button onclick="closeRiskModal()" class="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-blue-950/50 flex-shrink-0">
+                    <i class="fas fa-times text-xl sm:text-2xl"></i>
                 </button>
             </div>
 
             <!-- Modal Content -->
-            <div class="flex h-[calc(90vh-120px)]">
+            <div class="flex flex-col lg:flex-row h-[calc(95vh-120px)]">
                 <!-- Main Content -->
-                <div class="flex-1 p-6 overflow-y-auto">
-                    <!-- Risk Score Section -->
+                <div class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+                    <!-- Company Summary Section -->
                     <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xl font-semibold text-white">Risk Assessment</h3>
-                            <div class="flex items-center space-x-2">
-                                <span class="text-sm text-gray-400">Trend:</span>
-                                <span id="riskTrend" class="text-red-400 flex items-center">
-                                    <i class="fas fa-arrow-up mr-1"></i>Rising
-                                </span>
-                            </div>
-                        </div>
-                        <div class="bg-gray-800 rounded-lg p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <div>
+                        <div class="bg-gradient-to-br from-blue-950/40 to-purple-950/40 border border-blue-900/30 rounded-2xl p-8 backdrop-blur-sm">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center space-x-6">
+                                    <div class="w-20 h-20 bg-blue-600/20 rounded-2xl flex items-center justify-center border border-blue-500/30">
+                                        <i class="fas fa-building text-blue-400 text-3xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-2xl font-bold text-white mb-2">Tesla, Inc.</h3>
+                                        <div class="flex items-center space-x-4">
+                                            <span class="text-gray-400">TSLA</span>
+                                            <span class="bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full text-sm border border-blue-500/30">Automotive</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <span class="text-gray-400">Trend:</span>
+                                        <span id="riskTrend" class="text-red-400 flex items-center">
+                                            <i class="fas fa-arrow-up mr-1"></i>Rising
+                                        </span>
+                                    </div>
                                     <div class="text-4xl font-bold text-white mb-2">
                                         <span id="riskScore">72</span>/100
                                     </div>
                                     <div id="riskLevel" class="text-lg text-yellow-400 font-semibold">Moderate Risk</div>
                                 </div>
-                                <div class="w-32 h-32 relative">
-                                    <svg class="w-32 h-32 transform -rotate-90" viewBox="0 0 100 100">
-                                        <circle cx="50" cy="50" r="40" stroke="#374151" stroke-width="8" fill="none"/>
-                                        <circle id="riskCircle" cx="50" cy="50" r="40" stroke="#f59e0b" stroke-width="8" 
-                                                fill="none" stroke-dasharray="251.2" stroke-dashoffset="70.3" 
+                            </div>
+                            
+                            <!-- Risk Score Visualization -->
+                            <div class="flex items-center justify-center">
+                                <div class="w-48 h-48 relative">
+                                    <svg class="w-48 h-48 transform -rotate-90" viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="45" stroke="#1e3a8a" stroke-width="6" fill="none"/>
+                                        <circle id="riskCircle" cx="50" cy="50" r="45" stroke="#f59e0b" stroke-width="6" 
+                                                fill="none" stroke-dasharray="283" stroke-dashoffset="79" 
                                                 stroke-linecap="round" class="transition-all duration-1000"/>
                                     </svg>
                                     <div class="absolute inset-0 flex items-center justify-center">
-                                        <span id="riskPercentage" class="text-2xl font-bold text-white">72%</span>
+                                        <div class="text-center">
+                                            <span id="riskPercentage" class="text-4xl font-bold text-white">72%</span>
+                                            <div class="text-gray-400 text-sm">Risk Score</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Risk Breakdown -->
+                    <!-- Risk Breakdown Section -->
                     <div class="mb-8">
-                        <h3 class="text-xl font-semibold text-white mb-4">Risk Factor Breakdown</h3>
+                        <h3 class="text-2xl font-bold text-white mb-6">Risk Factor Breakdown</h3>
                         <div class="space-y-4">
                             <!-- Financial Volatility -->
-                            <div class="bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors cursor-pointer" onclick="toggleRiskDetail('financial')">
+                            <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-6 hover:bg-blue-950/40 transition-all cursor-pointer backdrop-blur-sm" onclick="toggleRiskDetail('financial')">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center">
-                                            <i class="fas fa-chart-line text-white"></i>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center border border-red-500/30">
+                                            <i class="fas fa-chart-line text-red-400 text-xl"></i>
                                         </div>
                                         <div>
-                                            <h4 class="text-white font-semibold">Financial Volatility</h4>
-                                            <p class="text-gray-400 text-sm">Stock swings, debt ratio</p>
+                                            <h4 class="text-white font-semibold text-lg">Financial Volatility</h4>
+                                            <p class="text-gray-400">Stock swings, debt ratio</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-center space-x-4">
+                                    <div class="flex items-center space-x-6">
                                         <div class="text-right">
-                                            <div class="text-white font-semibold">30%</div>
+                                            <div class="text-white font-semibold text-lg">30%</div>
                                             <div class="text-gray-400 text-sm">Weight</div>
                                         </div>
-                                        <div class="w-20 bg-gray-700 rounded-full h-2">
-                                            <div class="bg-red-500 h-2 rounded-full" style="width: 85%"></div>
+                                        <div class="w-24 bg-gray-700 rounded-full h-3">
+                                            <div class="bg-red-500 h-3 rounded-full" style="width: 85%"></div>
                                         </div>
                                         <i class="fas fa-chevron-down text-gray-400"></i>
                                     </div>
                                 </div>
-                                <div id="financial-detail" class="hidden mt-4 p-4 bg-gray-700 rounded-lg">
-                                    <p class="text-gray-300 text-sm mb-2">High volatility detected in recent trading patterns. Debt-to-equity ratio above industry average.</p>
+                                <div id="financial-detail" class="hidden mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                                    <p class="text-gray-300 mb-3">High volatility detected in recent trading patterns. Debt-to-equity ratio above industry average.</p>
                                     <div class="flex items-center space-x-4 text-sm">
                                         <span class="text-blue-400">Source: Conway API</span>
                                         <span class="text-gray-400">Last updated: 2 hours ago</span>
@@ -93,30 +109,30 @@
                             </div>
 
                             <!-- Social Sentiment -->
-                            <div class="bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors cursor-pointer" onclick="toggleRiskDetail('social')">
+                            <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-6 hover:bg-blue-950/40 transition-all cursor-pointer backdrop-blur-sm" onclick="toggleRiskDetail('social')">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-                                            <i class="fas fa-users text-white"></i>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center border border-blue-500/30">
+                                            <i class="fas fa-users text-blue-400 text-xl"></i>
                                         </div>
                                         <div>
-                                            <h4 class="text-white font-semibold">Social Sentiment</h4>
-                                            <p class="text-gray-400 text-sm">Twitter/Reddit tone analysis</p>
+                                            <h4 class="text-white font-semibold text-lg">Social Sentiment</h4>
+                                            <p class="text-gray-400">Twitter/Reddit tone analysis</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-center space-x-4">
+                                    <div class="flex items-center space-x-6">
                                         <div class="text-right">
-                                            <div class="text-white font-semibold">20%</div>
+                                            <div class="text-white font-semibold text-lg">20%</div>
                                             <div class="text-gray-400 text-sm">Weight</div>
                                         </div>
-                                        <div class="w-20 bg-gray-700 rounded-full h-2">
-                                            <div class="bg-blue-500 h-2 rounded-full" style="width: 60%"></div>
+                                        <div class="w-24 bg-gray-700 rounded-full h-3">
+                                            <div class="bg-blue-500 h-3 rounded-full" style="width: 60%"></div>
                                         </div>
                                         <i class="fas fa-chevron-down text-gray-400"></i>
                                     </div>
                                 </div>
-                                <div id="social-detail" class="hidden mt-4 p-4 bg-gray-700 rounded-lg">
-                                    <p class="text-gray-300 text-sm mb-2">Mixed sentiment detected across social platforms. Recent product announcements received positive feedback.</p>
+                                <div id="social-detail" class="hidden mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                                    <p class="text-gray-300 mb-3">Mixed sentiment detected across social platforms. Recent product announcements received positive feedback.</p>
                                     <div class="flex items-center space-x-4 text-sm">
                                         <span class="text-blue-400">Source: Bright Data + Fetch.ai</span>
                                         <span class="text-gray-400">Last updated: 1 hour ago</span>
@@ -125,30 +141,30 @@
                             </div>
 
                             <!-- Leadership Stability -->
-                            <div class="bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors cursor-pointer" onclick="toggleRiskDetail('leadership')">
+                            <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-6 hover:bg-blue-950/40 transition-all cursor-pointer backdrop-blur-sm" onclick="toggleRiskDetail('leadership')">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                                            <i class="fas fa-user-tie text-white"></i>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center border border-green-500/30">
+                                            <i class="fas fa-user-tie text-green-400 text-xl"></i>
                                         </div>
                                         <div>
-                                            <h4 class="text-white font-semibold">Leadership Stability</h4>
-                                            <p class="text-gray-400 text-sm">CEO news, turnover analysis</p>
+                                            <h4 class="text-white font-semibold text-lg">Leadership Stability</h4>
+                                            <p class="text-gray-400">CEO news, turnover analysis</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-center space-x-4">
+                                    <div class="flex items-center space-x-6">
                                         <div class="text-right">
-                                            <div class="text-white font-semibold">15%</div>
+                                            <div class="text-white font-semibold text-lg">15%</div>
                                             <div class="text-gray-400 text-sm">Weight</div>
                                         </div>
-                                        <div class="w-20 bg-gray-700 rounded-full h-2">
-                                            <div class="bg-green-500 h-2 rounded-full" style="width: 25%"></div>
+                                        <div class="w-24 bg-gray-700 rounded-full h-3">
+                                            <div class="bg-green-500 h-3 rounded-full" style="width: 25%"></div>
                                         </div>
                                         <i class="fas fa-chevron-down text-gray-400"></i>
                                     </div>
                                 </div>
-                                <div id="leadership-detail" class="hidden mt-4 p-4 bg-gray-700 rounded-lg">
-                                    <p class="text-gray-300 text-sm mb-2">Strong leadership stability. CEO approval ratings remain high with consistent vision execution.</p>
+                                <div id="leadership-detail" class="hidden mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                                    <p class="text-gray-300 mb-3">Strong leadership stability. CEO approval ratings remain high with consistent vision execution.</p>
                                     <div class="flex items-center space-x-4 text-sm">
                                         <span class="text-blue-400">Source: CodeRabbit LLM</span>
                                         <span class="text-gray-400">Last updated: 3 hours ago</span>
@@ -157,30 +173,30 @@
                             </div>
 
                             <!-- Regulatory Risk -->
-                            <div class="bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors cursor-pointer" onclick="toggleRiskDetail('regulatory')">
+                            <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-6 hover:bg-blue-950/40 transition-all cursor-pointer backdrop-blur-sm" onclick="toggleRiskDetail('regulatory')">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center">
-                                            <i class="fas fa-gavel text-white"></i>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center border border-yellow-500/30">
+                                            <i class="fas fa-gavel text-yellow-400 text-xl"></i>
                                         </div>
                                         <div>
-                                            <h4 class="text-white font-semibold">Regulatory Risk</h4>
-                                            <p class="text-gray-400 text-sm">SEC filings, compliance status</p>
+                                            <h4 class="text-white font-semibold text-lg">Regulatory Risk</h4>
+                                            <p class="text-gray-400">SEC filings, compliance status</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-center space-x-4">
+                                    <div class="flex items-center space-x-6">
                                         <div class="text-right">
-                                            <div class="text-white font-semibold">25%</div>
+                                            <div class="text-white font-semibold text-lg">25%</div>
                                             <div class="text-gray-400 text-sm">Weight</div>
                                         </div>
-                                        <div class="w-20 bg-gray-700 rounded-full h-2">
-                                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 70%"></div>
+                                        <div class="w-24 bg-gray-700 rounded-full h-3">
+                                            <div class="bg-yellow-500 h-3 rounded-full" style="width: 70%"></div>
                                         </div>
                                         <i class="fas fa-chevron-down text-gray-400"></i>
                                     </div>
                                 </div>
-                                <div id="regulatory-detail" class="hidden mt-4 p-4 bg-gray-700 rounded-lg">
-                                    <p class="text-gray-300 text-sm mb-2">Moderate regulatory exposure. Recent SEC filings show standard compliance with some pending investigations.</p>
+                                <div id="regulatory-detail" class="hidden mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                                    <p class="text-gray-300 mb-3">Moderate regulatory exposure. Recent SEC filings show standard compliance with some pending investigations.</p>
                                     <div class="flex items-center space-x-4 text-sm">
                                         <span class="text-blue-400">Source: Elastic Agent Builder</span>
                                         <span class="text-gray-400">Last updated: 4 hours ago</span>
@@ -189,30 +205,30 @@
                             </div>
 
                             <!-- AI Ethics / Environmental -->
-                            <div class="bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors cursor-pointer" onclick="toggleRiskDetail('ethics')">
+                            <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-6 hover:bg-blue-950/40 transition-all cursor-pointer backdrop-blur-sm" onclick="toggleRiskDetail('ethics')">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
-                                            <i class="fas fa-leaf text-white"></i>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center border border-purple-500/30">
+                                            <i class="fas fa-leaf text-purple-400 text-xl"></i>
                                         </div>
                                         <div>
-                                            <h4 class="text-white font-semibold">AI Ethics / Environmental</h4>
-                                            <p class="text-gray-400 text-sm">Sustainability, AI governance</p>
+                                            <h4 class="text-white font-semibold text-lg">AI Ethics / Environmental</h4>
+                                            <p class="text-gray-400">Sustainability, AI governance</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-center space-x-4">
+                                    <div class="flex items-center space-x-6">
                                         <div class="text-right">
-                                            <div class="text-white font-semibold">10%</div>
+                                            <div class="text-white font-semibold text-lg">10%</div>
                                             <div class="text-gray-400 text-sm">Weight</div>
                                         </div>
-                                        <div class="w-20 bg-gray-700 rounded-full h-2">
-                                            <div class="bg-purple-500 h-2 rounded-full" style="width: 40%"></div>
+                                        <div class="w-24 bg-gray-700 rounded-full h-3">
+                                            <div class="bg-purple-500 h-3 rounded-full" style="width: 40%"></div>
                                         </div>
                                         <i class="fas fa-chevron-down text-gray-400"></i>
                                     </div>
                                 </div>
-                                <div id="ethics-detail" class="hidden mt-4 p-4 bg-gray-700 rounded-lg">
-                                    <p class="text-gray-300 text-sm mb-2">Strong environmental initiatives. AI ethics framework in place with regular audits.</p>
+                                <div id="ethics-detail" class="hidden mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                                    <p class="text-gray-300 mb-3">Strong environmental initiatives. AI ethics framework in place with regular audits.</p>
                                     <div class="flex items-center space-x-4 text-sm">
                                         <span class="text-blue-400">Source: Warp / Reka / Creao</span>
                                         <span class="text-gray-400">Last updated: 6 hours ago</span>
@@ -224,27 +240,27 @@
 
                     <!-- AI Agent Actions -->
                     <div class="mb-8">
-                        <h3 class="text-xl font-semibold text-white mb-4">AI Agent Actions</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <button onclick="runAIAudit()" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg transition-colors flex items-center space-x-3">
-                                <i class="fas fa-brain text-xl"></i>
+                        <h3 class="text-2xl font-bold text-white mb-6">AI Agent Actions</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <button onclick="runAIAudit()" class="bg-blue-600/20 hover:bg-blue-600/30 text-white p-6 rounded-xl transition-all flex items-center space-x-4 border border-blue-500/30 hover:border-blue-500/50 backdrop-blur-sm">
+                                <i class="fas fa-brain text-2xl text-blue-400"></i>
                                 <div class="text-left">
-                                    <div class="font-semibold">Run AI Audit</div>
-                                    <div class="text-sm opacity-80">Baseten/Claude evaluation</div>
+                                    <div class="font-semibold text-lg">Run AI Audit</div>
+                                    <div class="text-sm text-gray-400">Baseten/Claude evaluation</div>
                                 </div>
                             </button>
-                            <button onclick="simulateChange()" class="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg transition-colors flex items-center space-x-3">
-                                <i class="fas fa-magic text-xl"></i>
+                            <button onclick="simulateChange()" class="bg-green-600/20 hover:bg-green-600/30 text-white p-6 rounded-xl transition-all flex items-center space-x-4 border border-green-500/30 hover:border-green-500/50 backdrop-blur-sm">
+                                <i class="fas fa-magic text-2xl text-green-400"></i>
                                 <div class="text-left">
-                                    <div class="font-semibold">Simulate Change</div>
-                                    <div class="text-sm opacity-80">Fetch.ai scenario testing</div>
+                                    <div class="font-semibold text-lg">Simulate Change</div>
+                                    <div class="text-sm text-gray-400">Fetch.ai scenario testing</div>
                                 </div>
                             </button>
-                            <button onclick="exportSummary()" class="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-lg transition-colors flex items-center space-x-3">
-                                <i class="fas fa-download text-xl"></i>
+                            <button onclick="exportSummary()" class="bg-purple-600/20 hover:bg-purple-600/30 text-white p-6 rounded-xl transition-all flex items-center space-x-4 border border-purple-500/30 hover:border-purple-500/50 backdrop-blur-sm">
+                                <i class="fas fa-download text-2xl text-purple-400"></i>
                                 <div class="text-left">
-                                    <div class="font-semibold">Export Summary</div>
-                                    <div class="text-sm opacity-80">Postman API report</div>
+                                    <div class="font-semibold text-lg">Export Summary</div>
+                                    <div class="text-sm text-gray-400">Postman API report</div>
                                 </div>
                             </button>
                         </div>
@@ -252,43 +268,43 @@
                 </div>
 
                 <!-- Right Sidebar -->
-                <div class="w-80 bg-gray-800 border-l border-gray-700 p-6 overflow-y-auto">
-                    <h3 class="text-lg font-semibold text-white mb-4">Real-time Feed</h3>
+                <div class="w-full lg:w-96 bg-blue-950/20 border-t lg:border-t-0 lg:border-l border-blue-900/50 p-4 sm:p-6 overflow-y-auto backdrop-blur-sm">
+                    <h3 class="text-xl font-bold text-white mb-6">Real-time Feed</h3>
                     
                     <!-- Live Updates -->
-                    <div class="space-y-4 mb-6">
-                        <div class="bg-gray-700 rounded-lg p-3">
+                    <div class="space-y-4 mb-8">
+                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-4 backdrop-blur-sm">
                             <div class="flex items-start space-x-3">
-                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-twitter text-white text-sm"></i>
+                                <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center border border-blue-500/30">
+                                    <i class="fas fa-twitter text-blue-400"></i>
                                 </div>
                                 <div class="flex-1">
-                                    <p class="text-white text-sm">"Tesla's new AI chip announcement driving positive sentiment"</p>
-                                    <p class="text-gray-400 text-xs mt-1">2 minutes ago</p>
+                                    <p class="text-white text-sm mb-2">"Tesla's new AI chip announcement driving positive sentiment"</p>
+                                    <p class="text-gray-400 text-xs">2 minutes ago</p>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="bg-gray-700 rounded-lg p-3">
+                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-4 backdrop-blur-sm">
                             <div class="flex items-start space-x-3">
-                                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-newspaper text-white text-sm"></i>
+                                <div class="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center border border-red-500/30">
+                                    <i class="fas fa-newspaper text-red-400"></i>
                                 </div>
                                 <div class="flex-1">
-                                    <p class="text-white text-sm">"SEC filing reveals new regulatory inquiry"</p>
-                                    <p class="text-gray-400 text-xs mt-1">15 minutes ago</p>
+                                    <p class="text-white text-sm mb-2">"SEC filing reveals new regulatory inquiry"</p>
+                                    <p class="text-gray-400 text-xs">15 minutes ago</p>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="bg-gray-700 rounded-lg p-3">
+                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-4 backdrop-blur-sm">
                             <div class="flex items-start space-x-3">
-                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-microphone text-white text-sm"></i>
+                                <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center border border-green-500/30">
+                                    <i class="fas fa-microphone text-green-400"></i>
                                 </div>
                                 <div class="flex-1">
-                                    <p class="text-white text-sm">"CEO interview: Sustainability roadmap update"</p>
-                                    <p class="text-gray-400 text-xs mt-1">1 hour ago</p>
+                                    <p class="text-white text-sm mb-2">"CEO interview: Sustainability roadmap update"</p>
+                                    <p class="text-gray-400 text-xs">1 hour ago</p>
                                 </div>
                             </div>
                         </div>
@@ -296,13 +312,28 @@
 
                     <!-- Agent Logs -->
                     <div>
-                        <h4 class="text-md font-semibold text-white mb-3">Agent Logs</h4>
-                        <div class="space-y-2 text-xs">
-                            <div class="text-green-400">✓ Conway API: Financial data fetched</div>
-                            <div class="text-blue-400">✓ Bright Data: Social sentiment analyzed</div>
-                            <div class="text-yellow-400">✓ CodeRabbit: Leadership stability assessed</div>
-                            <div class="text-purple-400">✓ Elastic: Regulatory filings processed</div>
-                            <div class="text-pink-400">✓ Warp: Environmental metrics updated</div>
+                        <h4 class="text-lg font-bold text-white mb-4">Agent Logs</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3 text-sm">
+                                <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                                <span class="text-green-400">Conway API: Financial data fetched</span>
+                            </div>
+                            <div class="flex items-center space-x-3 text-sm">
+                                <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                                <span class="text-blue-400">Bright Data: Social sentiment analyzed</span>
+                            </div>
+                            <div class="flex items-center space-x-3 text-sm">
+                                <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                                <span class="text-yellow-400">CodeRabbit: Leadership stability assessed</span>
+                            </div>
+                            <div class="flex items-center space-x-3 text-sm">
+                                <div class="w-2 h-2 bg-purple-400 rounded-full"></div>
+                                <span class="text-purple-400">Elastic: Regulatory filings processed</span>
+                            </div>
+                            <div class="flex items-center space-x-3 text-sm">
+                                <div class="w-2 h-2 bg-pink-400 rounded-full"></div>
+                                <span class="text-pink-400">Warp: Environmental metrics updated</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -318,4 +349,105 @@ document.getElementById('riskModal').addEventListener('click', function(e) {
         closeRiskModal();
     }
 });
+
+// Toggle risk detail sections
+function toggleRiskDetail(section) {
+    const detail = document.getElementById(section + '-detail');
+    if (detail) {
+        detail.classList.toggle('hidden');
+    }
+}
+
+// AI Agent Action functions
+function runAIAudit() {
+    // Simulate AI audit
+    console.log('Running AI audit...');
+    // Add your ML model integration here
+}
+
+function simulateChange() {
+    // Simulate scenario testing
+    console.log('Simulating change scenarios...');
+    // Add your ML model integration here
+}
+
+function exportSummary() {
+    // Export summary report
+    console.log('Exporting summary...');
+    // Add your ML model integration here
+}
+
+// Function to update risk score using ML model
+async function updateRiskScoreWithML(transactionData) {
+    try {
+        const response = await fetch('/api/ml-score/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(transactionData)
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            // Update the risk score display
+            document.getElementById('riskScore').textContent = Math.round(data.risk_score);
+            document.getElementById('riskPercentage').textContent = Math.round(data.risk_score) + '%';
+            
+            // Update risk level
+            const riskLevel = document.getElementById('riskLevel');
+            if (data.risk_score >= 75) {
+                riskLevel.textContent = 'High Risk';
+                riskLevel.className = 'text-lg text-red-400 font-semibold';
+            } else if (data.risk_score >= 50) {
+                riskLevel.textContent = 'Moderate Risk';
+                riskLevel.className = 'text-lg text-yellow-400 font-semibold';
+            } else {
+                riskLevel.textContent = 'Low Risk';
+                riskLevel.className = 'text-lg text-green-400 font-semibold';
+            }
+            
+            // Update the circle progress
+            const circle = document.getElementById('riskCircle');
+            const percentage = data.risk_score;
+            const circumference = 2 * Math.PI * 45; // radius = 45
+            const offset = circumference - (percentage / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+            
+            // Update stroke color based on risk level
+            if (data.risk_score >= 75) {
+                circle.style.stroke = '#ef4444'; // red
+            } else if (data.risk_score >= 50) {
+                circle.style.stroke = '#f59e0b'; // yellow
+            } else {
+                circle.style.stroke = '#10b981'; // green
+            }
+            
+            return data;
+        } else {
+            console.error('Failed to get ML risk score');
+            return null;
+        }
+    } catch (error) {
+        console.error('Error calling ML API:', error);
+        return null;
+    }
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 </script>

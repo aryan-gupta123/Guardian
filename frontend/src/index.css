@@ -4,11 +4,11 @@
 
 @layer base {
   html {
-    @apply dark;
+    @apply bg-gray-900;
   }
   
   body {
-    @apply bg-dark-900 text-white;
+    @apply bg-gray-900 text-white;
   }
 }
 
