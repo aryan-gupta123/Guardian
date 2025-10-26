@@ -1,0 +1,3 @@
+Transaction: 123
+Action: Dispute Draft
+Reason: Suspicious pattern detected by Guardian (anomaly exceeded threshold).
