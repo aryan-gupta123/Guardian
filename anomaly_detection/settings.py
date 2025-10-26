@@ -71,8 +71,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'anomaly_detection.wsgi.application'
 
-# Database
-# Use DATABASE_URL if provided (Render/Postgres), else fallback to SQLite
+import dj_database_url
+
+# In the Database section:
 if os.getenv('DATABASE_URL'):
     DATABASES = {'default': dj_database_url.parse(os.getenv('DATABASE_URL'))}
 elif os.getenv('USE_POSTGRES', 'False').lower() == 'true':
@@ -111,8 +112,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [p for p in [BASE_DIR / 'frontend' / 'dist'] if p.exists()]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'frontend' / 'dist',
+]
 # Media files (runtime-generated artifacts, audio, etc.)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
