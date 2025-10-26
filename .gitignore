@@ -16,3 +16,4 @@ __pycache__/
 # SQLite local DBs
 *.sqlite3
 git rm -r --cached venv
+.env.backup
