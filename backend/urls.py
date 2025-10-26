@@ -20,5 +20,11 @@ urlpatterns = [
     path('api/merchant/<int:merchant_id>/', views.get_merchant, name='get_merchant'),
     path('api/explain/<int:transaction_id>/', views.explain_transaction, name='explain_transaction'),
     path('api/high-risk/', views.get_high_risk_transactions, name='get_high_risk_transactions'),
+
+    # Scam Detection API Routes
+    path('api/scam-detection/', views.detect_scam, name='detect_scam'),
+    path('api/scam-detection/<int:detection_id>/', views.get_scam_detection, name='get_scam_detection'),
+    path('api/scam-detections/', views.list_scam_detections, name='list_scam_detections'),
+    path('api/scam-detection/high-risk/', views.get_high_risk_companies, name='get_high_risk_companies'),
 ]
 
