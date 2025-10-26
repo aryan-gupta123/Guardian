@@ -7,6 +7,16 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url  # optional, handles DATABASE_URL if set
 
+from urllib.parse import urlparse
+_db_url = os.getenv("DATABASE_URL", "")
+try:
+    _parsed = urlparse(_db_url) if _db_url else None
+    _host = _parsed.hostname if _parsed else None
+    print("✅ DATABASE_URL present:", bool(_db_url))
+    print("✅ DATABASE_URL host:", _host)
+except Exception as e:
+    print("DB URL parse error:", e)
+
 # Load environment variables
 load_dotenv()
 
