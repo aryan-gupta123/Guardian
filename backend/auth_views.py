@@ -51,16 +51,21 @@ def logout_view(request):
 def dashboard_view(request):
     # Dummy data for the transaction table
     transactions = [
-        {'id': 1, 'merchant': 'Tesla, Inc.', 'amount': 120.50, 'risk_level': 'Safe', 'risk_score': 0.2, 'ticker': 'TSLA', 'timestamp': '2024-01-15 10:30:00'},
-        {'id': 2, 'merchant': 'Apple Store', 'amount': 55.20, 'risk_level': 'Safe', 'risk_score': 0.1, 'ticker': 'AAPL', 'timestamp': '2024-01-15 11:15:00'},
-        {'id': 3, 'merchant': 'Crypto Exchange', 'amount': 1500.00, 'risk_level': 'Risky', 'risk_score': 0.9, 'ticker': 'CRYPTO', 'timestamp': '2024-01-15 12:00:00'},
-        {'id': 4, 'merchant': 'Starbucks', 'amount': 12.75, 'risk_level': 'Safe', 'risk_score': 0.1, 'ticker': 'SBUX', 'timestamp': '2024-01-15 13:45:00'},
-        {'id': 5, 'merchant': 'Amazon', 'amount': 780.00, 'risk_level': 'Medium', 'risk_score': 0.6, 'ticker': 'AMZN', 'timestamp': '2024-01-15 14:30:00'},
-        {'id': 6, 'merchant': 'Microsoft', 'amount': 250.00, 'risk_level': 'Safe', 'risk_score': 0.2, 'ticker': 'MSFT', 'timestamp': '2024-01-15 15:15:00'},
-        {'id': 7, 'merchant': 'Unknown Merchant', 'amount': 5200.00, 'risk_level': 'Risky', 'risk_score': 0.95, 'ticker': 'UNKNOWN', 'timestamp': '2024-01-15 16:00:00'},
-        {'id': 8, 'merchant': 'Google', 'amount': 30.00, 'risk_level': 'Safe', 'risk_score': 0.1, 'ticker': 'GOOGL', 'timestamp': '2024-01-15 16:45:00'},
-        {'id': 9, 'merchant': 'Meta', 'amount': 950.00, 'risk_level': 'Medium', 'risk_score': 0.7, 'ticker': 'META', 'timestamp': '2024-01-15 17:30:00'},
-        {'id': 10, 'merchant': 'Netflix', 'amount': 85.00, 'risk_level': 'Safe', 'risk_score': 0.3, 'ticker': 'NFLX', 'timestamp': '2024-01-15 18:15:00'},
+        {'id': 1, 'merchant': 'Enron', 'merchant_id': 40101, 'amount': 2480.00, 'risk_level': 'Risky', 'risk_score': 0.95, 'ticker': 'ENRN.Q', 'timestamp': '2024-01-15 09:05:00'},
+        {'id': 2, 'merchant': 'Theranos', 'merchant_id': 40102, 'amount': 1650.00, 'risk_level': 'Risky', 'risk_score': 0.92, 'ticker': 'THRN.P', 'timestamp': '2024-01-15 09:40:00'},
+        {'id': 3, 'merchant': 'FTX Trading', 'merchant_id': 40103, 'amount': 5100.00, 'risk_level': 'Risky', 'risk_score': 0.97, 'ticker': 'FTX', 'timestamp': '2024-01-15 10:25:00'},
+        {'id': 4, 'merchant': 'Wirecard AG', 'merchant_id': 40104, 'amount': 3215.00, 'risk_level': 'Risky', 'risk_score': 0.9, 'ticker': 'WDI', 'timestamp': '2024-01-15 11:10:00'},
+        {'id': 5, 'merchant': 'Bernie Madoff Investment Securities', 'merchant_id': 40105, 'amount': 6850.00, 'risk_level': 'Risky', 'risk_score': 0.99, 'ticker': 'MADOFF', 'timestamp': '2024-01-15 11:55:00'},
+        {'id': 6, 'merchant': 'Luckin Coffee', 'merchant_id': 40106, 'amount': 890.00, 'risk_level': 'Risky', 'risk_score': 0.78, 'ticker': 'LKNCY', 'timestamp': '2024-01-15 12:40:00'},
+        {'id': 7, 'merchant': 'Satyam Computer Services', 'merchant_id': 40107, 'amount': 1475.00, 'risk_level': 'Risky', 'risk_score': 0.82, 'ticker': 'SAY', 'timestamp': '2024-01-15 13:15:00'},
+        {'id': 8, 'merchant': 'Berkshire Hathaway', 'merchant_id': 50101, 'amount': 420.00, 'risk_level': 'Safe', 'risk_score': 0.08, 'ticker': 'BRK.A', 'timestamp': '2024-01-15 14:00:00'},
+        {'id': 9, 'merchant': 'Apple Inc.', 'merchant_id': 50102, 'amount': 180.00, 'risk_level': 'Safe', 'risk_score': 0.12, 'ticker': 'AAPL', 'timestamp': '2024-01-15 14:45:00'},
+        {'id': 10, 'merchant': 'Microsoft Corporation', 'merchant_id': 50103, 'amount': 235.00, 'risk_level': 'Safe', 'risk_score': 0.1, 'ticker': 'MSFT', 'timestamp': '2024-01-15 15:30:00'},
+        {'id': 11, 'merchant': 'Costco Wholesale', 'merchant_id': 50104, 'amount': 95.50, 'risk_level': 'Safe', 'risk_score': 0.06, 'ticker': 'COST', 'timestamp': '2024-01-15 16:05:00'},
+        {'id': 12, 'merchant': 'Visa Inc.', 'merchant_id': 50105, 'amount': 310.00, 'risk_level': 'Safe', 'risk_score': 0.14, 'ticker': 'V', 'timestamp': '2024-01-15 16:40:00'},
+        {'id': 13, 'merchant': 'JPMorgan Chase', 'merchant_id': 50106, 'amount': 560.00, 'risk_level': 'Medium', 'risk_score': 0.38, 'ticker': 'JPM', 'timestamp': '2024-01-15 17:25:00'},
+        {'id': 14, 'merchant': 'Patagonia', 'merchant_id': 50107, 'amount': 145.00, 'risk_level': 'Safe', 'risk_score': 0.05, 'ticker': 'PRIVATE', 'timestamp': '2024-01-15 18:10:00'},
+        {'id': 15, 'merchant': 'Lehman Brothers (Estate)', 'merchant_id': 40108, 'amount': 2725.00, 'risk_level': 'Risky', 'risk_score': 0.88, 'ticker': 'LEHMQ', 'timestamp': '2024-01-15 18:45:00'},
     ]
 
     risk_counts = {

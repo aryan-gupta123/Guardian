@@ -1,0 +1,19 @@
+# OS files
+.DS_Store
+
+# Virtual environments
+venv/
+.venv/
+backend/venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# SQLite local DBs
+*.sqlite3
+git rm -r --cached venv
+.env.backup

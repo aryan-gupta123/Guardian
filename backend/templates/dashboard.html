@@ -7,6 +7,7 @@
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -48,11 +49,20 @@
                     </button>
                     
                     <!-- Navigation Links -->
-                    <div class="hidden md:flex items-center space-x-6 ml-8">
+                    <div class="hidden md:flex items-center space-x-4 ml-8">
                         <a href="#dashboard" class="text-blue-400 font-medium text-sm">Dashboard</a>
-                        <a href="#risk" class="text-gray-400 hover:text-white font-medium text-sm transition-colors">Risk Feed</a>
-                        <a href="#agents" class="text-gray-400 hover:text-white font-medium text-sm transition-colors">Agent Actions</a>
-                        <a href="#settings" class="text-gray-400 hover:text-white font-medium text-sm transition-colors">Settings</a>
+                        <button onclick="openRiskPatterns()" class="flex items-center gap-2 px-3 py-1 text-gray-400 hover:text-white hover:bg-blue-950/50 rounded-lg transition-colors">
+                            <i class="fas fa-chart-bar text-sm"></i>
+                            <span class="text-sm">Risk Patterns</span>
+                        </button>
+                        <button onclick="openConfigureAlerts()" class="flex items-center gap-2 px-3 py-1 text-gray-400 hover:text-white hover:bg-blue-950/50 rounded-lg transition-colors">
+                            <i class="fas fa-bell text-sm"></i>
+                            <span class="text-sm">Configure Alerts</span>
+                        </button>
+                        <button onclick="openAudioSettings()" class="flex items-center gap-2 px-3 py-1 text-gray-400 hover:text-white hover:bg-blue-950/50 rounded-lg transition-colors">
+                            <i class="fas fa-volume-up text-sm"></i>
+                            <span class="text-sm">Audio Settings</span>
+                        </button>
                     </div>
                 </div>
 
@@ -87,9 +97,18 @@
             <div id="mobile-menu" class="mobile-menu md:hidden bg-[#0a1628]/95 backdrop-blur-md border-t border-blue-950/50">
                 <div class="px-4 py-2 space-y-1">
                     <a href="#dashboard" class="block px-3 py-2 text-blue-400 font-medium text-sm rounded-lg bg-blue-950/30">Dashboard</a>
-                    <a href="#risk" class="block px-3 py-2 text-gray-400 hover:text-white font-medium text-sm rounded-lg hover:bg-blue-950/30 transition-colors">Risk Feed</a>
-                    <a href="#agents" class="block px-3 py-2 text-gray-400 hover:text-white font-medium text-sm rounded-lg hover:bg-blue-950/30 transition-colors">Agent Actions</a>
-                    <a href="#settings" class="block px-3 py-2 text-gray-400 hover:text-white font-medium text-sm rounded-lg hover:bg-blue-950/30 transition-colors">Settings</a>
+                    <button onclick="openRiskPatterns()" class="w-full text-left flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white font-medium text-sm rounded-lg hover:bg-blue-950/30 transition-colors">
+                        <i class="fas fa-chart-bar text-sm"></i>
+                        <span>Risk Patterns</span>
+                    </button>
+                    <button onclick="openConfigureAlerts()" class="w-full text-left flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white font-medium text-sm rounded-lg hover:bg-blue-950/30 transition-colors">
+                        <i class="fas fa-bell text-sm"></i>
+                        <span>Configure Alerts</span>
+                    </button>
+                    <button onclick="openAudioSettings()" class="w-full text-left flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-white font-medium text-sm rounded-lg hover:bg-blue-950/30 transition-colors">
+                        <i class="fas fa-volume-up text-sm"></i>
+                        <span>Audio Settings</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -104,28 +123,34 @@
                 <div class="lg:col-span-2 space-y-4 sm:space-y-6">
                     <!-- Stats Cards -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
+                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm hover:bg-blue-950/40 transition-all cursor-pointer group" onclick="showTooltip('highRisk')">
                             <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-exclamation-triangle text-red-500"></i>
+                                <i class="fas fa-exclamation-triangle text-red-500 group-hover:text-red-400 transition-colors"></i>
                                 <span class="text-gray-400 text-sm">High Risk</span>
+                                <i class="fas fa-info-circle text-gray-500 text-xs ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></i>
                             </div>
                             <p class="text-2xl text-red-400 font-bold" id="highRiskCount">3</p>
+                            <p class="text-xs text-gray-500 mt-1">Transactions flagged as suspicious</p>
                         </div>
 
-                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
+                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm hover:bg-blue-950/40 transition-all cursor-pointer group" onclick="showTooltip('avgRisk')">
                             <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-chart-line text-blue-400"></i>
+                                <i class="fas fa-chart-line text-blue-400 group-hover:text-blue-300 transition-colors"></i>
                                 <span class="text-gray-400 text-sm">Avg Risk</span>
+                                <i class="fas fa-info-circle text-gray-500 text-xs ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></i>
                             </div>
                             <p class="text-2xl text-white" id="avgRiskScore">65/100</p>
+                            <p class="text-xs text-gray-500 mt-1">Overall safety score</p>
                         </div>
 
-                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
+                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm hover:bg-blue-950/40 transition-all cursor-pointer group" onclick="showTooltip('totalTracked')">
                             <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-dollar-sign text-green-500"></i>
+                                <i class="fas fa-dollar-sign text-green-500 group-hover:text-green-400 transition-colors"></i>
                                 <span class="text-gray-400 text-sm">Total Tracked</span>
+                                <i class="fas fa-info-circle text-gray-500 text-xs ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></i>
                             </div>
                             <p class="text-2xl text-white" id="totalAmount">$2,847.50</p>
+                            <p class="text-xs text-gray-500 mt-1">Amount under protection</p>
                         </div>
                     </div>
 
@@ -230,42 +255,76 @@
                         </div>
                     </div>
 
-                    <!-- Transaction Cards -->
-                    <div class="space-y-4" id="transactionCards">
-                        {% for transaction in transactions %}
-                        <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-4 sm:p-6 backdrop-blur-sm hover:bg-blue-950/40 transition-all cursor-pointer" onclick="openRiskModal({
-                            merchant: '{{ transaction.merchant }}',
-                            amount: {{ transaction.amount }},
-                            risk: '{{ transaction.risk_level }}',
-                            score: {{ transaction.risk_score }},
-                            ticker: '{{ transaction.ticker|default:"N/A" }}'
-                        })">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
-                                <div class="flex items-center space-x-3 sm:space-x-4">
-                                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/30">
-                                        <i class="fas fa-store text-blue-400 text-lg sm:text-xl"></i>
+                    <!-- Real Time Feed - Transaction Threats -->
+                    <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 sm:p-6 backdrop-blur-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-broadcast-tower text-blue-400 text-lg"></i>
+                                <h3 class="text-white text-lg font-semibold">Real Time Feed</h3>
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-600/20 text-green-400 border border-green-500/30">
+                                    <i class="fas fa-circle text-green-400 mr-1 animate-pulse"></i>
+                                    Live
+                                </span>
+                            </div>
+                            <button onclick="refreshFeed()" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="fas fa-sync-alt text-sm"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Transaction Threats Feed -->
+                        <div class="space-y-4" id="transactionThreatsFeed">
+                            {% for transaction in transactions %}
+                            <div class="bg-blue-950/30 border border-blue-900/50 rounded-xl p-4 sm:p-6 backdrop-blur-sm hover:bg-blue-950/40 transition-all cursor-pointer hover-lift fade-in" onclick="openRiskModal({
+                                id: {{ transaction.id }},
+                                merchant: '{{ transaction.merchant|escapejs }}',
+                                merchantId: {{ transaction.merchant_id }},
+                                amount: {{ transaction.amount }},
+                                risk: '{{ transaction.risk_level|escapejs }}',
+                                score: {{ transaction.risk_score }},
+                                ticker: '{{ transaction.ticker|default:"N/A"|escapejs }}',
+                                timestamp: '{{ transaction.timestamp|escapejs }}'
+                            })">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
+                                    <div class="flex items-center space-x-3 sm:space-x-4">
+                                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/30">
+                                            <i class="fas fa-store text-blue-400 text-lg sm:text-xl"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <h3 class="text-white font-semibold text-base sm:text-lg truncate">{{ transaction.merchant }}</h3>
+                                            <p class="text-gray-400 text-sm">{{ transaction.timestamp }}</p>
+                                            <!-- Company-specific AI analysis preview -->
+                                            <div class="flex items-center gap-2 mt-1">
+                                                <span class="text-blue-400 text-xs">Powered by Anthropic Claude</span>
+                                                <span class="text-gray-500 text-xs">•</span>
+                                                <span class="text-gray-500 text-xs">AI Analysis</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="flex-1 min-w-0">
-                                        <h3 class="text-white font-semibold text-base sm:text-lg truncate">{{ transaction.merchant }}</h3>
-                                        <p class="text-gray-400 text-sm">{{ transaction.timestamp }}</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between sm:block sm:text-right">
-                                    <div class="text-white font-bold text-lg sm:text-xl">${{ transaction.amount }}</div>
-                                    <div class="flex items-center space-x-2">
-                                        {% if transaction.risk_level == 'Safe' %}
-                                            <span class="text-green-400 text-sm">🟢 Safe</span>
-                                        {% elif transaction.risk_level == 'Warning' %}
-                                            <span class="text-yellow-400 text-sm">🟡 Medium</span>
-                                        {% else %}
-                                            <span class="text-red-400 text-sm">🔴 Risky</span>
-                                        {% endif %}
-                                        <span class="text-gray-400 text-sm">Score: {{ transaction.risk_score }}</span>
+                                    <div class="flex items-center justify-between sm:block sm:text-right">
+                                        <div class="text-white font-bold text-lg sm:text-xl">${{ transaction.amount }}</div>
+                                        <div class="flex items-center space-x-2">
+                                            {% if transaction.risk_level == 'Safe' %}
+                                                <span class="text-green-400 text-sm">🟢 Safe</span>
+                                            {% elif transaction.risk_level == 'Warning' %}
+                                                <span class="text-yellow-400 text-sm">🟡 Medium</span>
+                                            {% else %}
+                                                <span class="text-red-400 text-sm">🔴 Risky</span>
+                                            {% endif %}
+                                            <span class="text-gray-400 text-sm">Score: {{ transaction.risk_score }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
+
+                        <!-- Load More Button -->
+                        <div class="mt-4 text-center">
+                            <button onclick="loadMoreFeed()" class="text-blue-400 hover:text-white text-sm font-medium transition-colors">
+                                <i class="fas fa-chevron-down mr-1"></i>
+                                Load More Threats
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -273,42 +332,82 @@
                 <div class="space-y-4 sm:space-y-6">
                     <!-- Guardian Mode Toggle -->
                     <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
-                        <h3 class="text-white mb-4">Guardian Mode</h3>
+                        <div class="flex items-center gap-3 mb-3">
+                            <i class="fas fa-volume-up text-blue-400"></i>
+                            <h3 class="text-white">Guardian Mode</h3>
+                        </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-400 text-sm sm:text-base">Voice Alerts</span>
+                            <div>
+                                <span class="text-gray-400 text-sm sm:text-base">Voice Alerts</span>
+                                <p class="text-gray-500 text-xs">Enhanced accessibility with voice</p>
+                            </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="guardianMode" class="sr-only peer">
                                 <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                             </label>
                         </div>
+                        <div class="mt-3">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-600/20 text-blue-400 border border-blue-500/30">
+                                <i class="fas fa-microphone mr-1"></i>
+                                Voice Accessibility
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Trusted Contact -->
                     <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
-                        <h3 class="text-white mb-4">Trusted Contact</h3>
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-users text-blue-400"></i>
+                            <h3 class="text-white">Trusted Contact</h3>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-600/20 text-green-400 border border-green-500/30 ml-auto">
+                                <i class="fas fa-check mr-1"></i>
+                                Enabled
+                            </span>
+                        </div>
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center border border-green-500/30">
                                 <i class="fas fa-user text-green-400"></i>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-white font-semibold text-sm sm:text-base truncate">Sarah Johnson</p>
-                                <p class="text-gray-400 text-xs sm:text-sm">Emergency Contact</p>
+                                <p class="text-white font-semibold text-sm sm:text-base truncate">Sarah Johnson (Cybersecurity Agent)</p>
+                                <p class="text-gray-400 text-xs sm:text-sm">sarah.j@email.com</p>
+                                <p class="text-gray-500 text-xs">+1 (555) 123-4567</p>
                             </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-blue-900/30">
+                            <p class="text-gray-300 text-xs">
+                                Will be notified when risk score exceeds 
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-600/20 text-blue-400 border border-blue-500/30 ml-1">75</span>
+                            </p>
                         </div>
                     </div>
 
                     <!-- Quick Actions -->
                     <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
                         <h3 class="text-white mb-4">Quick Actions</h3>
-                        <div class="space-y-2">
-                            <button class="w-full text-left px-3 py-2 rounded-lg text-blue-400 hover:bg-blue-950/50 hover:text-white transition-colors text-sm sm:text-base">
-                                📊 View Risk Patterns
+                        <div class="space-y-3">
+                            <button onclick="openRiskPatterns()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-blue-400 hover:bg-blue-950/50 hover:text-white transition-colors text-sm sm:text-base border border-blue-700/30 hover:border-blue-600/50 btn-hover hover-lift">
+                                <i class="fas fa-chart-bar text-lg"></i>
+                                <div class="text-left">
+                                    <div class="font-medium">View Risk Patterns</div>
+                                    <div class="text-xs text-gray-500">Analyze transaction patterns</div>
+                                </div>
                             </button>
-                            <button class="w-full text-left px-3 py-2 rounded-lg text-blue-400 hover:bg-blue-950/50 hover:text-white transition-colors text-sm sm:text-base">
-                                🔍 Investigate Mode
+                            
+                            <button onclick="openConfigureAlerts()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-blue-400 hover:bg-blue-950/50 hover:text-white transition-colors text-sm sm:text-base border border-blue-700/30 hover:border-blue-600/50 btn-hover hover-lift">
+                                <i class="fas fa-bell text-lg"></i>
+                                <div class="text-left">
+                                    <div class="font-medium">Configure Alerts</div>
+                                    <div class="text-xs text-gray-500">Customize notifications</div>
+                                </div>
                             </button>
-                            <button class="w-full text-left px-3 py-2 rounded-lg text-blue-400 hover:bg-blue-950/50 hover:text-white transition-colors text-sm sm:text-base">
-                                ⚙️ Configure Alerts
+                            
+                            <button onclick="openAudioSettings()" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-purple-400 hover:bg-purple-950/50 hover:text-white transition-colors text-sm sm:text-base border border-purple-700/30 hover:border-purple-600/50 btn-hover hover-lift">
+                                <i class="fas fa-volume-up text-lg"></i>
+                                <div class="text-left">
+                                    <div class="font-medium">Audio & Voice</div>
+                                    <div class="text-xs text-gray-500">Voice accessibility settings</div>
+                                </div>
                             </button>
                         </div>
                     </div>
@@ -316,12 +415,27 @@
                     <!-- Tech Stack -->
                     <div class="bg-blue-950/30 border border-blue-900/50 rounded-lg p-4 backdrop-blur-sm">
                         <h3 class="text-white mb-3">Powered By</h3>
-                        <div class="space-y-2 text-xs sm:text-sm text-gray-300">
-                            <p>🤖 <strong>Fetch.ai & Creao:</strong> Agentic workflows</p>
-                            <p>🧠 <strong>Claude:</strong> Explainable AI reasoning</p>
-                            <p>📊 <strong>Bright Data:</strong> Merchant intelligence</p>
-                            <p>🔊 <strong>Fish Audio:</strong> Voice accessibility</p>
-                            <p>⚛️ <strong>React + Tailwind:</strong> Modern UI/UX</p>
+                        <div class="space-y-3 text-xs sm:text-sm text-gray-300">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-robot text-blue-400"></i>
+                                <span><strong>Fetch.ai:</strong> Agentic workflows</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-brain text-purple-400"></i>
+                                <span><strong>Claude:</strong> Explainable AI reasoning</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-chart-line text-green-400"></i>
+                                <span><strong>Bright Data:</strong> Merchant intelligence</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-volume-up text-yellow-400"></i>
+                                <span><strong>Fish Audio:</strong> Voice accessibility</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-atom text-indigo-400"></i>
+                                <span><strong>React + Tailwind:</strong> Modern UI/UX</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -331,6 +445,576 @@
 
     <!-- Include Risk Modal -->
     {% include 'risk_modal.html' %}
+
+    <!-- Risk Patterns Modal -->
+    <div id="riskPatternsModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#0a1628] border border-blue-900/50 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-6 border-b border-blue-900/50">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-purple-500/20 rounded-lg">
+                        <i class="fas fa-chart-bar text-purple-400 text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-white text-xl">Risk Pattern Analysis</h2>
+                        <p class="text-gray-400 text-sm">Detailed breakdown of transaction risk factors</p>
+                    </div>
+                </div>
+                <button onclick="closeRiskPatterns()" class="text-gray-400 hover:text-white hover:bg-blue-950/50 rounded-lg p-2">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 space-y-6">
+                <!-- Transaction Overview -->
+                <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-1">Merchant</p>
+                            <p class="text-white text-lg">SecureVault Pro</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-sm mb-1">Amount</p>
+                            <p class="text-white text-lg">$299.99</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-sm mb-1">Risk Score</p>
+                            <p class="text-red-400 text-2xl font-bold">95/100</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Analysis -->
+                <div class="bg-gradient-to-br from-purple-950/40 to-blue-950/40 border border-purple-900/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="p-2 bg-purple-500/20 rounded-lg">
+                            <i class="fas fa-brain text-purple-400 text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-white text-lg mb-2">AI Analysis Summary</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                This transaction shows multiple red flags. SecureVault Pro is a newly registered merchant with a pattern of charging seniors for unnecessary security software. The $299.99 charge is 340% above your typical subscription spending. Similar merchants have been reported for predatory renewal tactics.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Factors -->
+                <div class="space-y-4">
+                    <h3 class="text-white text-lg flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle text-red-400"></i>
+                        Risk Factors Breakdown
+                    </h3>
+
+                    <!-- High Risk Factors -->
+                    <div class="space-y-3">
+                        <div class="bg-red-950/20 border border-red-500/50 rounded-lg p-4">
+                            <div class="flex items-start gap-3">
+                                <div class="p-2 bg-red-500/20 rounded-lg">
+                                    <i class="fas fa-dollar-sign text-red-400"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-white font-medium mb-1">Transaction Amount</h4>
+                                    <p class="text-gray-300 text-sm mb-2">
+                                        $299.99 is much higher than typical. Your usual subscription cost is around $8.99 per transaction.
+                                    </p>
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span class="text-gray-400">Current: <span class="text-white">$299.99</span></span>
+                                        <span class="text-gray-400">Baseline: <span class="text-white">$8.99</span></span>
+                                        <span class="text-red-400">Impact: 95%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-red-950/20 border border-red-500/50 rounded-lg p-4">
+                            <div class="flex items-start gap-3">
+                                <div class="p-2 bg-red-500/20 rounded-lg">
+                                    <i class="fas fa-store text-red-400"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-white font-medium mb-1">Merchant Credibility</h4>
+                                    <p class="text-gray-300 text-sm mb-2">
+                                        "SecureVault Pro" has poor reputation. High dispute rate: 23% (normal: &lt;2%). Recently flagged by 47 other users.
+                                    </p>
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span class="text-gray-400">Risk Score: <span class="text-red-400">23/100</span></span>
+                                        <span class="text-gray-400">Safe merchants: <span class="text-green-400">&gt;70/100</span></span>
+                                        <span class="text-red-400">Impact: 92%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-orange-950/20 border border-orange-500/50 rounded-lg p-4">
+                            <div class="flex items-start gap-3">
+                                <div class="p-2 bg-orange-500/20 rounded-lg">
+                                    <i class="fas fa-clock text-orange-400"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-white font-medium mb-1">Transaction Time</h4>
+                                    <p class="text-gray-300 text-sm mb-2">
+                                        Transaction at 3:24 AM. You normally shop between 2-5 PM.
+                                    </p>
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <span class="text-gray-400">Time: <span class="text-white">3:24 AM</span></span>
+                                        <span class="text-gray-400">Normal: <span class="text-white">2-5 PM</span></span>
+                                        <span class="text-orange-400">Impact: 45%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Merchant Intelligence -->
+                <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                    <h3 class="text-white text-lg mb-3 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-blue-400"></i>
+                        Merchant Intelligence
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-1">Category</p>
+                            <p class="text-white">Software / Security</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-sm mb-1">Reputation Score</p>
+                            <p class="text-red-400">23/100</p>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <p class="text-gray-400 text-sm mb-2">Similar Risky Merchants:</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-red-950/30 text-red-300 px-2 py-1 rounded text-xs">SafeGuard Plus</span>
+                            <span class="bg-red-950/30 text-red-300 px-2 py-1 rounded text-xs">ProtectNow Suite</span>
+                            <span class="bg-red-950/30 text-red-300 px-2 py-1 rounded text-xs">SecureLife Premium</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex justify-end gap-3 p-6 border-t border-blue-900/50">
+                <button onclick="closeRiskPatterns()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                    Close
+                </button>
+                <button onclick="openProtectMe()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    Protect Me
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configure Alerts Modal -->
+    <div id="configureAlertsModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#0a1628] border border-blue-900/50 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-6 border-b border-blue-900/50">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-500/20 rounded-lg">
+                        <i class="fas fa-bell text-blue-400 text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-white text-xl">Configure Alert Settings</h2>
+                        <p class="text-gray-400 text-sm">Customize how Guardian notifies you about suspicious activity</p>
+                    </div>
+                </div>
+                <button onclick="closeConfigureAlerts()" class="text-gray-400 hover:text-white hover:bg-blue-950/50 rounded-lg p-2">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 space-y-6">
+                <!-- Notification Channels -->
+                <div class="space-y-4">
+                    <h3 class="text-white text-lg">Notification Channels</h3>
+                    
+                    <!-- Email Alerts -->
+                    <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-envelope text-blue-400"></i>
+                                <div>
+                                    <h4 class="text-white">Email Alerts</h4>
+                                    <p class="text-gray-400 text-sm">Detailed reports with analysis</p>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-gray-400 text-sm">Email Address</label>
+                                <input type="email" value="user@example.com" class="w-full mt-1 px-3 py-2 bg-blue-900/30 border border-blue-800 text-white rounded-lg">
+                            </div>
+                            <div>
+                                <label class="text-gray-400 text-sm mb-2 block">Alert for risk levels:</label>
+                                <div class="flex gap-2">
+                                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">critical</span>
+                                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">high</span>
+                                    <span class="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">medium</span>
+                                    <span class="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">low</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SMS Alerts -->
+                    <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-sms text-green-400"></i>
+                                <div>
+                                    <h4 class="text-white">SMS/Text Alerts</h4>
+                                    <p class="text-gray-400 text-sm">Quick notifications on your phone</p>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-gray-400 text-sm">Phone Number</label>
+                                <input type="tel" value="+1 (555) 123-4567" class="w-full mt-1 px-3 py-2 bg-blue-900/30 border border-blue-800 text-white rounded-lg">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Voice Call Alerts -->
+                    <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-phone text-red-400"></i>
+                                <div>
+                                    <h4 class="text-white">Voice Call Alerts</h4>
+                                    <p class="text-gray-400 text-sm">Emergency phone calls for critical risks</p>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-gray-400 text-sm">Phone Number</label>
+                                <input type="tel" value="+1 (555) 123-4567" class="w-full mt-1 px-3 py-2 bg-blue-900/30 border border-blue-800 text-white rounded-lg">
+                            </div>
+                            <div>
+                                <label class="text-gray-400 text-sm">Escalation Time: 10 minutes</label>
+                                <input type="range" min="5" max="60" value="10" class="w-full mt-1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Thresholds -->
+                <div class="space-y-4">
+                    <h3 class="text-white text-lg">Alert Thresholds</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-dollar-sign text-green-400"></i>
+                                    <span class="text-white">Transaction Amount</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <input type="range" min="10" max="1000" value="50" class="flex-1">
+                                <span class="text-white w-16">$50</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-exclamation-triangle text-red-400"></i>
+                                    <span class="text-white">Risk Score</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <input type="range" min="0" max="100" value="60" class="flex-1">
+                                <span class="text-white w-16">60</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-globe text-blue-400"></i>
+                                    <span class="text-white">Foreign Transactions</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-shopping-bag text-blue-400"></i>
+                                    <span class="text-white">New Merchants</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trusted Contacts -->
+                <div class="space-y-4">
+                    <h3 class="text-white text-lg">Trusted Contacts</h3>
+                    
+                    <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-users text-blue-400"></i>
+                                <div>
+                                    <h4 class="text-white">Sarah Johnson (Cybersecurity Agent)</h4>
+                                    <p class="text-gray-400 text-sm">sarah.j@email.com • +1 (555) 123-4567</p>
+                                    <p class="text-gray-500 text-xs">Notify when risk ≥ 75</p>
+                                </div>
+                            </div>
+                            <button class="text-red-400 hover:text-red-300 hover:bg-red-950/20 rounded-lg p-2">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="w-full bg-blue-900/30 border border-blue-800 text-blue-400 hover:bg-blue-900/50 rounded-lg py-3 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>
+                        Add Trusted Contact
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex justify-end gap-3 p-6 border-t border-blue-900/50">
+                <button onclick="closeConfigureAlerts()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                    Cancel
+                </button>
+                <button onclick="saveAlertSettings()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                    <i class="fas fa-save mr-2"></i>
+                    Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Settings Modal -->
+    <div id="audioSettingsModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#0a1628] border border-blue-900/50 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-6 border-b border-blue-900/50">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-purple-500/20 rounded-lg">
+                        <i class="fas fa-volume-up text-purple-400 text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-white text-xl">Audio & Voice Settings</h2>
+                        <p class="text-gray-400 text-sm">Configure voice alerts and accessibility features</p>
+                    </div>
+                </div>
+                <button onclick="closeAudioSettings()" class="text-gray-400 hover:text-white hover:bg-blue-950/50 rounded-lg p-2">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 space-y-6">
+                <!-- Master Audio Control -->
+                <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-volume-up text-blue-400"></i>
+                            <div>
+                                <h4 class="text-white">Enable Audio</h4>
+                                <p class="text-gray-400 text-sm">Master control for all sounds and voice alerts</p>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Volume Control -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-white">Master Volume</span>
+                        <span class="text-blue-400">70%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="70" class="w-full">
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <span>Mute</span>
+                        <span>Max</span>
+                    </div>
+                </div>
+
+                <!-- Sound Effects -->
+                <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h4 class="text-white">Sound Effects</h4>
+                            <p class="text-gray-400 text-sm">Play sounds for alerts and interactions</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="bg-red-950/20 border border-red-900/50 text-red-400 hover:bg-red-950/40 rounded-lg py-2 text-sm">
+                            <i class="fas fa-bolt mr-2"></i>
+                            Test High Alert
+                        </button>
+                        <button class="bg-yellow-950/20 border border-yellow-900/50 text-yellow-400 hover:bg-yellow-950/40 rounded-lg py-2 text-sm">
+                            <i class="fas fa-bolt mr-2"></i>
+                            Test Medium Alert
+                        </button>
+                        <button class="bg-blue-950/20 border border-blue-900/50 text-blue-400 hover:bg-blue-950/40 rounded-lg py-2 text-sm">
+                            <i class="fas fa-bolt mr-2"></i>
+                            Test Low Alert
+                        </button>
+                        <button class="bg-green-950/20 border border-green-900/50 text-green-400 hover:bg-green-950/40 rounded-lg py-2 text-sm">
+                            <i class="fas fa-bolt mr-2"></i>
+                            Test Success
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Voice Alerts -->
+                <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h4 class="text-white flex items-center gap-2">
+                                <i class="fas fa-microphone text-purple-400"></i>
+                                Voice Alerts (Fish Audio)
+                            </h4>
+                            <p class="text-gray-400 text-sm">AI-powered voice narration for accessibility</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Voice Speed -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-white">Voice Speed</span>
+                                <span class="text-blue-400">1.0x</span>
+                            </div>
+                            <input type="range" min="50" max="200" value="100" class="w-full">
+                            <div class="flex justify-between text-xs text-gray-500">
+                                <span>Slower (0.5x)</span>
+                                <span>Normal (1.0x)</span>
+                                <span>Faster (2.0x)</span>
+                            </div>
+                        </div>
+
+                        <!-- Voice Gender -->
+                        <div class="space-y-2">
+                            <label class="text-white">Voice Gender</label>
+                            <select class="w-full px-3 py-2 bg-blue-900/30 border border-blue-800 text-white rounded-lg">
+                                <option value="female">Female Voice</option>
+                                <option value="male">Male Voice</option>
+                                <option value="neutral">Neutral Voice</option>
+                            </select>
+                        </div>
+
+                        <!-- Voice Tone -->
+                        <div class="space-y-2">
+                            <label class="text-white">Voice Tone</label>
+                            <select class="w-full px-3 py-2 bg-blue-900/30 border border-blue-800 text-white rounded-lg">
+                                <option value="calm">Calm & Reassuring</option>
+                                <option value="urgent">Urgent & Alert</option>
+                                <option value="friendly">Friendly & Warm</option>
+                                <option value="professional">Professional & Clear</option>
+                            </select>
+                        </div>
+
+                        <!-- Test Voice -->
+                        <div class="bg-purple-950/20 border border-purple-900/50 rounded-lg p-3">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-white text-sm mb-1">Test Voice Settings</p>
+                                    <p class="text-gray-400 text-xs">Hear how Guardian will sound with current settings</p>
+                                </div>
+                                <button class="bg-purple-950/40 border border-purple-800 text-purple-400 hover:bg-purple-950/60 rounded-lg px-3 py-1 text-sm">
+                                    <i class="fas fa-play mr-2"></i>
+                                    Test
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guardian Mode Recommendation -->
+                <div class="bg-green-950/20 border border-green-900/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-user text-green-400 mt-1"></i>
+                        <div>
+                            <h4 class="text-green-400 mb-1">Guardian Mode Active</h4>
+                            <p class="text-gray-300 text-sm">
+                                Voice alerts are highly recommended for Guardian Mode. They provide crucial accessibility features for seniors and visually impaired users.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fish Audio Info -->
+                <div class="bg-blue-950/20 border border-blue-900/50 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-cog text-blue-400 mt-1"></i>
+                        <div>
+                            <h4 class="text-blue-400 mb-2">About Fish Audio</h4>
+                            <p class="text-gray-300 text-sm leading-relaxed mb-2">
+                                Guardian uses Fish Audio's advanced AI text-to-speech technology for natural, high-quality voice alerts.
+                            </p>
+                            <ul class="text-gray-400 text-sm space-y-1 ml-4">
+                                <li>• Natural-sounding voices with emotion</li>
+                                <li>• Multiple languages and accents</li>
+                                <li>• Low latency for real-time alerts</li>
+                                <li>• High accessibility for all users</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex justify-center p-6 border-t border-blue-900/50">
+                <button onclick="closeAudioSettings()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Navigation links
@@ -402,79 +1086,87 @@
         // Risk Modal Functions
         function openRiskModal(companyData) {
             const modal = document.getElementById('riskModal');
-            
-            // Show loading state
-            document.getElementById('companyName').textContent = companyData.merchant;
-            document.getElementById('companyTicker').textContent = companyData.ticker || 'N/A • Technology';
+
+            const merchantName = companyData.merchant || 'Unknown Merchant';
+            const tickerLabel = companyData.ticker ? `${companyData.ticker}` : 'N/A';
+
+            document.getElementById('companyName').textContent = merchantName;
+            document.getElementById('companyTicker').textContent = `${tickerLabel} • ${companyData.risk || 'Risk Profile'}`;
+
+            const summaryNameEl = document.getElementById('summaryName');
+            if (summaryNameEl) summaryNameEl.textContent = merchantName;
+
+            const summaryTickerEl = document.getElementById('summaryTicker');
+            if (summaryTickerEl) summaryTickerEl.textContent = tickerLabel;
+
+            const summaryBadgeEl = document.getElementById('summaryBadge');
+            if (summaryBadgeEl) {
+                const badgeConfig = getBadgeForRisk(companyData.risk);
+                summaryBadgeEl.textContent = badgeConfig.label;
+                summaryBadgeEl.className = `px-3 py-1 rounded-full text-sm border ${badgeConfig.classes}`;
+            }
+
             document.getElementById('riskScore').textContent = '...';
             document.getElementById('riskPercentage').textContent = '...';
-            document.getElementById('riskLevel').textContent = 'Analyzing...';
-            
+            document.getElementById('riskLevel').textContent = 'Pending';
+
+            const modelScoreInfo = document.getElementById('modelScoreInfo');
+            if (modelScoreInfo) {
+                modelScoreInfo.classList.add('hidden');
+            }
+
             modal.classList.remove('hidden');
-            
-            // Call ML API to get actual risk score using real transaction data
-            fetch('/api/ml-score/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({
-                    id: companyData.merchant.toLowerCase().replace(/\s+/g, '_'),
-                    amount: companyData.amount || 100.0,
-                    hour: new Date().getHours(),
-                    is_foreign: companyData.amount > 1000, // Higher amounts more likely foreign
-                    merchant_risk: getMerchantRisk(companyData.merchant), // Based on merchant name
-                    user_txn_rate: getTransactionRate(companyData.amount) // Based on amount
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('ML API Response:', data); // Debug log
-                if (data.status === 'success') {
-                    const riskScore = Math.round(data.risk_score * 100);
-                    const riskColor = getRiskColor(riskScore);
-                    const riskLevel = getRiskLevel(riskScore);
-                    
-                    console.log(`ML Risk Score: ${data.risk_score} (${riskScore}%)`); // Debug log
-                    console.log('ML Reasons:', data.reasons); // Debug log
-                    
-                    // Update UI with ML results
-                    document.getElementById('riskScore').textContent = riskScore;
-                    document.getElementById('riskPercentage').textContent = riskScore + '%';
-                    document.getElementById('riskLevel').textContent = riskLevel;
-                    document.getElementById('riskLevel').className = `text-lg font-semibold`;
-                    
-                    if (riskScore >= 80) {
-                        document.getElementById('riskLevel').classList.add('text-red-400');
-                    } else if (riskScore >= 60) {
-                        document.getElementById('riskLevel').classList.add('text-yellow-400');
-                    } else {
-                        document.getElementById('riskLevel').classList.add('text-green-400');
-                    }
-                    
-                    // Update circle progress
-                    const circle = document.getElementById('riskCircle');
-                    const circumference = 2 * Math.PI * 45; // Updated radius for new design
-                    const offset = circumference - (riskScore / 100) * circumference;
-                    circle.style.strokeDashoffset = offset;
-                    circle.style.stroke = riskColor;
-                    
-                    // Update risk breakdown with ML reasons
-                    updateRiskBreakdown(data.reasons);
-                } else {
-                    console.error('ML scoring failed:', data.error);
-                    // Fallback to random score
-                    const riskScore = Math.floor(Math.random() * 100);
-                    updateRiskScore(riskScore);
+
+            const merchantId = companyData.merchantId ?? companyData.merchant_id ?? null;
+            const timestamp = companyData.timestamp ? new Date(companyData.timestamp) : null;
+            const hour = Number.isFinite(timestamp?.getHours()) ? timestamp.getHours() : new Date().getHours();
+            const amount = Number(companyData.amount) || 0;
+            const isForeign = amount >= 1500;
+            const userTxnRate = getTransactionRate(amount);
+            const baseScore = Number(companyData.score);
+
+            const transactionData = {
+                id: companyData.id ?? merchantName.toLowerCase().replace(/\s+/g, '_'),
+                merchant: merchantName,
+                merchant_id: merchantId,
+                merchant_name: merchantName,
+                risk_label: companyData.risk || '',
+                amount,
+                hour,
+                is_foreign: isForeign ? 1 : 0,
+                user_txn_rate: userTxnRate,
+                base_score: baseScore,
+                features: {
+                    amount,
+                    hour,
+                    is_foreign: isForeign ? 1 : 0,
+                    user_txn_rate: userTxnRate,
+                    merchant_name: merchantName,
+                    merchant_risk: baseScore
                 }
-            })
-            .catch(error => {
-                console.error('Error calling ML API:', error);
-                // Fallback to random score
-                const riskScore = Math.floor(Math.random() * 100);
-                updateRiskScore(riskScore);
-            });
+            };
+
+            updateRiskScoreWithML(transactionData);
+        }
+
+        function getBadgeForRisk(riskLevel) {
+            const risk = (riskLevel || '').toLowerCase();
+            if (risk === 'risky') {
+                return {
+                    label: 'Watchlist',
+                    classes: 'bg-red-600/20 text-red-400 border-red-500/30'
+                };
+            }
+            if (risk === 'medium' || risk === 'warning') {
+                return {
+                    label: 'Under Review',
+                    classes: 'bg-yellow-600/20 text-yellow-300 border-yellow-500/30'
+                };
+            }
+            return {
+                label: 'Trusted',
+                classes: 'bg-green-600/20 text-green-400 border-green-500/30'
+            };
         }
 
         function closeRiskModal() {
@@ -557,6 +1249,188 @@
             // Placeholder for auto-refresh functionality
             console.log('Refreshing transactions...');
         }, 30000);
+
+        // New button functions
+        function openRiskPatterns() {
+            document.getElementById('riskPatternsModal').classList.remove('hidden');
+        }
+
+        function closeRiskPatterns() {
+            document.getElementById('riskPatternsModal').classList.add('hidden');
+        }
+
+        function openConfigureAlerts() {
+            document.getElementById('configureAlertsModal').classList.remove('hidden');
+        }
+
+        function closeConfigureAlerts() {
+            document.getElementById('configureAlertsModal').classList.add('hidden');
+        }
+
+        function openAudioSettings() {
+            document.getElementById('audioSettingsModal').classList.remove('hidden');
+        }
+
+        function closeAudioSettings() {
+            document.getElementById('audioSettingsModal').classList.add('hidden');
+        }
+
+        function openNotificationCenter() {
+            // Open notification center
+            alert('Notification Center would open here');
+        }
+
+        function saveAlertSettings() {
+            alert('Alert settings saved successfully!');
+            closeConfigureAlerts();
+        }
+
+        function openProtectMe() {
+            alert('Protect Me feature coming soon!');
+        }
+
+        // Feed management functions
+        function refreshFeed() {
+            const refreshButton = document.querySelector('button[onclick="refreshFeed()"]');
+            const icon = refreshButton.querySelector('i');
+            
+            // Add loading animation
+            icon.classList.add('animate-spin');
+            refreshButton.disabled = true;
+            
+            // Simulate API call to refresh transaction threats
+            setTimeout(() => {
+                // Reload the page to get fresh transaction data
+                window.location.reload();
+            }, 2000);
+        }
+
+        function loadMoreFeed() {
+            const loadMoreButton = document.querySelector('button[onclick="loadMoreFeed()"]');
+            
+            // Add loading state
+            loadMoreButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Loading...';
+            loadMoreButton.disabled = true;
+            
+            // Simulate loading more threats
+            setTimeout(() => {
+                // Reset button
+                loadMoreButton.innerHTML = '<i class="fas fa-chevron-down mr-1"></i>Load More Threats';
+                loadMoreButton.disabled = false;
+                
+                showToast('More threats loaded', 'info');
+            }, 1500);
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-green-600',
+                error: 'bg-red-600',
+                info: 'bg-blue-600',
+                warning: 'bg-yellow-600'
+            };
+            
+            toast.className = `fixed top-20 right-4 ${colors[type]} text-white px-4 py-2 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize feed on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Transaction threats are already loaded via Django template
+            console.log('Transaction threats feed initialized');
+        });
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
+                e.target.classList.add('hidden');
+            }
+        });
+
+        // Tooltip functionality
+        function showTooltip(type) {
+            const tooltips = {
+                highRisk: {
+                    title: 'What is High Risk?',
+                    content: 'This shows how many transactions look suspicious or potentially dangerous. Guardian found 3 transactions that might be scams, unusual charges, or from untrustworthy merchants.',
+                    tip: '💡 Tip: Click on any red transaction below to see why Guardian flagged it.'
+                },
+                avgRisk: {
+                    title: 'What is Average Risk?',
+                    content: 'This is the overall safety score for all your transactions. Guardian grades each transaction from 0 (very safe) to 100 (very risky), then calculates the average.',
+                    tip: 'Your score: 65/100 (Okay)'
+                },
+                totalTracked: {
+                    title: 'What is Total Tracked?',
+                    content: 'This is the total amount of money in all your recent transactions that Guardian is watching. Think of it as the sum of all charges shown below.',
+                    tip: '💡 Guardian has already saved you money by stopping suspicious charges!'
+                }
+            };
+
+            const tooltip = tooltips[type];
+            if (tooltip) {
+                // Create and show tooltip
+                const tooltipElement = document.createElement('div');
+                tooltipElement.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 border border-blue-800/50 p-6 rounded-lg max-w-md z-50 shadow-2xl';
+                tooltipElement.innerHTML = `
+                    <div class="space-y-3">
+                        <h3 class="text-white text-lg font-semibold">${tooltip.title}</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">${tooltip.content}</p>
+                        <p class="text-blue-400 text-xs mt-3">${tooltip.tip}</p>
+                        <button onclick="this.parentElement.parentElement.remove()" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            Got it
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(tooltipElement);
+
+                // Add backdrop
+                const backdrop = document.createElement('div');
+                backdrop.className = 'fixed inset-0 bg-black/50 z-40';
+                backdrop.onclick = () => {
+                    tooltipElement.remove();
+                    backdrop.remove();
+                };
+                document.body.appendChild(backdrop);
+            }
+        }
+
+        // Enhanced Guardian Mode functionality
+        document.getElementById('guardianMode').addEventListener('change', function() {
+            if (this.checked) {
+                console.log('Guardian Mode activated - Voice alerts enabled');
+                // Show voice activation message
+                const message = document.createElement('div');
+                message.className = 'fixed top-20 right-4 bg-green-600/90 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+                message.innerHTML = '<i class="fas fa-volume-up mr-2"></i>Guardian Mode Activated - Voice alerts enabled';
+                document.body.appendChild(message);
+                setTimeout(() => message.remove(), 3000);
+            } else {
+                console.log('Guardian Mode deactivated');
+                // Show deactivation message
+                const message = document.createElement('div');
+                message.className = 'fixed top-20 right-4 bg-gray-600/90 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+                message.innerHTML = '<i class="fas fa-volume-mute mr-2"></i>Guardian Mode Deactivated';
+                document.body.appendChild(message);
+                setTimeout(() => message.remove(), 3000);
+            }
+        });
     </script>
 
     <style>
@@ -599,6 +1473,89 @@
             .tablet-grid {
                 grid-template-columns: 1fr;
             }
+        }
+
+        /* Enhanced animations and hover effects */
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 58, 138, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.5);
+        }
+
+        /* Button hover effects */
+        .btn-hover {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-hover:hover::before {
+            left: 100%;
+        }
+
+        /* Risk level indicators */
+        .risk-high {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(185, 28, 28, 0.1));
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .risk-medium {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(180, 83, 9, 0.1));
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .risk-low {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(21, 128, 61, 0.1));
+            border-color: rgba(34, 197, 94, 0.3);
         }
     </style>
 </body>
