@@ -1,213 +1,138 @@
-# Anomaly Detection System
+# 🛡️ Guardian
 
-A Django + React application for real-time transaction anomaly detection using machine learning.
+> **Bright Data Sponsorship Track Winner @ Cal Hacks 12.0** — AI-powered fraud detection with real-time transaction scoring, SHAP-based explainability, and autonomous agent actions.
 
-## 🏗️ Architecture
+![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-REST_Framework-092E20?style=flat&logo=django&logoColor=white)
+![React](https://img.shields.io/badge/React-Vite-61DAFB?style=flat&logo=react&logoColor=black)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-IsolationForest-F7931E?style=flat&logo=scikit-learn&logoColor=white)
 
-### Backend (Django)
-- **Django + Django REST Framework** - Main API service
-- **PostgreSQL** - Transaction and merchant data storage
-- **Scikit-learn** - IsolationForest for anomaly detection
-- **NumPy** - Feature transformation and normalization
-- **PyOD** - Alternative anomaly detectors
-- **Custom explainability service** - Returns top contributing features
+---
 
-### Frontend (React)
-- **React (Vite)** - Fast SPA frontend
-- **Tailwind CSS** - Dark + blue theme
-- **Lucide React** - Modern icons
-- **Axios** - API communication
+## What It Does
 
-## 🚀 Quick Start
+Guardian ingests financial transactions in real time, scores them for anomalous behavior using machine learning, and surfaces human-readable explanations for every flagged event. An autonomous agent layer makes and logs decisions with confidence scoring — so analysts always know *why* something was flagged, not just *that* it was.
+
+---
+
+## Tech Stack
+
+| Layer | Technologies |
+|---|---|
+| Backend | Django, Django REST Framework, PostgreSQL |
+| ML | Scikit-learn (IsolationForest), PyOD, NumPy |
+| Explainability | SHAP, permutation-based feature importance |
+| Frontend | React (Vite), Tailwind CSS, Lucide, Axios |
+| Deployment | Render, Gunicorn, WhiteNoise |
+
+---
+
+## Features
+
+- **Real-time scoring** — sub-second anomaly detection on incoming transactions
+- **Explainability panel** — top contributing risk features for every flagged transaction (amount, time, frequency, location)
+- **Agent actions** — autonomous decision engine with confidence scores and full reasoning logs
+- **Risk dashboard** — live metrics, filterable transaction table, status tracking (approved / flagged / blocked)
+- **Model persistence** — trained IsolationForest saved and hot-loaded for zero-latency inference
+
+---
+
+## Getting Started
 
 ### Prerequisites
 - Python 3.8+
 - Node.js 16+
 - PostgreSQL
 
-### Installation
+### Setup
 
-1. **Clone and setup:**
 ```bash
-git clone <your-repo>
-cd CalHacks
+git clone https://github.com/aryan-gupta123/Guardian.git
+cd Guardian
 ./setup.sh
-```
 
-2. **Configure environment:**
-```bash
 cp env.example .env
-# Edit .env with your database credentials
+# Fill in your database credentials
 ```
 
-3. **Start development servers:**
+### Run Locally
 
-**Backend (Terminal 1):**
 ```bash
+# Terminal 1 — Backend
 source venv/bin/activate
-python manage.py runserver
-```
+python3 manage.py runserver
 
-**Frontend (Terminal 2):**
-```bash
+# Terminal 2 — Frontend
 cd frontend
 npm run dev
 ```
 
-4. **Access the application:**
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000/api/
-- Django Admin: http://localhost:8000/admin/
+| Service | URL |
+|---|---|
+| Frontend | http://localhost:3000 |
+| API | http://localhost:8000/api/ |
+| Admin | http://localhost:8000/admin/ |
 
-## 📊 Features
+---
 
-### Dashboard
-- Real-time transaction monitoring
-- Risk score visualization
-- System status indicators
-- Recent high-risk transactions
+## API Reference
 
-### Risk Assessment Table
-- Comprehensive transaction listing
-- Risk score filtering and search
-- Status tracking (approved/flagged/blocked)
-- Action buttons for review
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/ingest/` | Ingest new transactions |
+| `POST` | `/api/score/` | Score without saving |
+| `POST` | `/api/agents/act/` | Trigger agent action |
+| `GET` | `/api/transactions/` | List transactions |
+| `GET` | `/api/transactions/{id}/explain/` | Get SHAP explanation |
+| `GET` | `/api/merchants/` | List merchants |
+| `POST` | `/api/merchants/{id}/transactions/` | Transactions by merchant |
 
-### Explainability Panel
-- AI-powered transaction explanations
-- Top contributing features
-- Risk factor identification
-- Feature importance analysis
+---
 
-### Agent Actions
-- Automated decision tracking
-- Confidence scoring
-- Action reasoning display
-- Status management
+## Project Structure
 
-## 🔧 API Endpoints
+```
+Guardian/
+├── anomaly_detection/     # Django project config
+├── backend/               # Core app
+│   ├── services/ml/       # IsolationForest + explainability
+│   ├── models.py
+│   ├── views.py
+│   └── serializers.py
+├── frontend/              # React (Vite)
+│   ├── src/components/
+│   └── src/App.jsx
+└── requirements.txt
+```
 
-### Core Endpoints
-- `POST /api/ingest/` - Ingest new transactions
-- `POST /api/score/` - Score transactions without saving
-- `POST /api/agents/act/` - Agent action handling
-- `GET /api/merchants/` - Merchant management
-- `GET /api/transactions/` - Transaction listing
+---
 
-### ML Services
-- `GET /api/transactions/{id}/explain/` - Get transaction explanation
-- `POST /api/merchants/{id}/transactions/` - Get merchant transactions
+## Deployment
 
-## 🤖 Machine Learning
-
-### Anomaly Detection
-- **IsolationForest** - Primary anomaly detector
-- **Feature Engineering** - Amount, time, frequency, location risk
-- **Real-time Scoring** - Sub-second response times
-- **Model Persistence** - Trained models saved and loaded
-
-### Explainability
-- **Feature Importance** - Permutation-based importance
-- **Risk Factors** - Human-readable explanations
-- **Contribution Analysis** - Individual feature contributions
-
-## 🎨 UI Components
-
-### Design System
-- **Dark Theme** - Professional dark interface
-- **Blue Accents** - Primary color scheme
-- **Responsive Design** - Mobile-friendly layout
-- **Accessibility** - Screen reader support
-
-### Key Components
-- **Dashboard** - Overview and metrics
-- **RiskTable** - Transaction management
-- **ExplainPanel** - AI explanations
-- **AgentActions** - Automated decisions
-
-## 🚀 Deployment
-
-### Production Setup
-1. **Environment Variables:**
 ```bash
+python3 manage.py collectstatic
+python3 manage.py migrate
+gunicorn anomaly_detection.wsgi:application
+```
+
+Required environment variables:
+```
 DEBUG=False
-SECRET_KEY=your-production-secret
+SECRET_KEY=your-secret-key
 DATABASE_URL=postgresql://user:pass@host:port/db
 ALLOWED_HOSTS=yourdomain.com
 ```
 
-2. **Static Files:**
-```bash
-python manage.py collectstatic
-```
+---
 
-3. **Database Migration:**
-```bash
-python manage.py migrate
-```
+## Contributors
 
-4. **Gunicorn:**
-```bash
-gunicorn anomaly_detection.wsgi:application
-```
+| | |
+|---|---|
+| [aryan-gupta123](https://github.com/aryan-gupta123) | Backend & ML |
+| [MadhavDonthula](https://github.com/MadhavDonthula) | Backend & ML |
+| [ronoktanvir](https://github.com/ronoktanvir) | Frontend & Integration |
 
-## 🔒 Security
+---
 
-- **CORS Configuration** - Proper cross-origin setup
-- **Environment Variables** - Secure credential management
-- **Input Validation** - API request validation
-- **SQL Injection Protection** - Django ORM usage
-
-## 📈 Performance
-
-- **Database Indexing** - Optimized queries
-- **Caching Strategy** - Model and data caching
-- **Async Processing** - Background ML tasks
-- **CDN Ready** - Static asset optimization
-
-## 🧪 Testing
-
-```bash
-# Backend tests
-python manage.py test
-
-# Frontend tests
-cd frontend
-npm test
-```
-
-## 📝 Development
-
-### Adding New Features
-1. **Backend:** Add models, views, serializers
-2. **Frontend:** Create components, update routing
-3. **ML:** Extend anomaly detection algorithms
-4. **API:** Update endpoints and documentation
-
-### Code Structure
-```
-├── anomaly_detection/     # Django project
-├── backend/              # Django app
-│   ├── services/ml/      # ML services
-│   ├── models.py         # Database models
-│   ├── views.py         # API views
-│   └── serializers.py    # Data serialization
-├── frontend/             # React app
-│   ├── src/components/   # React components
-│   ├── src/App.jsx       # Main app
-│   └── package.json      # Dependencies
-└── requirements.txt      # Python dependencies
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
-
-## 📄 License
-
-MIT License - see LICENSE file for details.
-
+MIT License
