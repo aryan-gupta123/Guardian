@@ -129,9 +129,10 @@ ALLOWED_HOSTS=yourdomain.com
 
 | | |
 |---|---|
-| [aryan-gupta123](https://github.com/aryan-gupta123) | Backend & ML |
-| [MadhavDonthula](https://github.com/MadhavDonthula) | Backend & ML |
-| [ronoktanvir](https://github.com/ronoktanvir) | Frontend & Integration |
+| [ronoktanvir](https://github.com/ronoktanvir) | Backend, ML, Integration |
+| [MadhavDonthula](https://github.com/MadhavDonthula) | Backend, Integration, Frontend |
+| [aryan-gupta123](https://github.com/aryan-gupta123) | Backend, Integration |
+| [Bradley Tsou](https://github.com/bradleytsou) | Frontend |
 
 ---
 
