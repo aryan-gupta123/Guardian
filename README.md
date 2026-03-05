@@ -7,6 +7,8 @@
 ![React](https://img.shields.io/badge/React-Vite-61DAFB?style=flat&logo=react&logoColor=black)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-IsolationForest-F7931E?style=flat&logo=scikit-learn&logoColor=white)
 
+
+DEVPOST/DEMO: https://devpost.com/software/guardian-ai-powered-fraud-prevention-for-your-money
 ---
 
 ## What It Does
