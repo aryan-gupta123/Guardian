@@ -30,3 +30,5 @@ frontend/build/
 .idea/
 *.swp
 *.swo
+frontend/node_modules/
+frontend/dist/
